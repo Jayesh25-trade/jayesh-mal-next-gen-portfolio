@@ -1,12 +1,16 @@
 import { motion } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
+import foodzz from "@/assets/project-foodzz.jpg";
+import parth from "@/assets/project-parth.jpg";
+import formomatic from "@/assets/project-formomatic.jpg";
+import dowry from "@/assets/project-dowry.jpg";
 
 const PROJECTS = [
-  { name: "Jimmyy Foodzz", category: "Food ordering", url: "https://jimmyy-fooddzz.vercel.app/", gradient: "from-neon-pink/40 to-neon-purple/40" },
-  { name: "Parth Fuel Corporation", category: "Business site", url: "https://parthfuelcorporation.vercel.app/", gradient: "from-neon-cyan/40 to-neon-blue/40" },
-  { name: "Formomatic PDF Pro", category: "Document tooling", url: "https://formomatic-pdf-pro.vercel.app/", gradient: "from-neon-purple/40 to-neon-blue/40" },
-  { name: "Dowry181", category: "Web product", url: "https://dowry181.vercel.app/", gradient: "from-neon-blue/40 to-neon-pink/40" },
+  { name: "Jimmyy Foodzz", category: "Food ordering platform", url: "https://jimmyy-fooddzz.vercel.app/", image: foodzz, tags: ["React", "Node", "Live orders"] },
+  { name: "Parth Fuel Corporation", category: "Corporate website", url: "https://parthfuelcorporation.vercel.app/", image: parth, tags: ["Next.js", "SEO", "CMS"] },
+  { name: "Formomatic PDF Pro", category: "Document tooling SaaS", url: "https://formomatic-pdf-pro.vercel.app/", image: formomatic, tags: ["React", "PDF.js", "Stripe"] },
+  { name: "Dowry181", category: "Matrimonial product", url: "https://dowry181.vercel.app/", image: dowry, tags: ["React", "Auth", "Realtime"] },
 ];
 
 export const Projects = () => {
@@ -33,23 +37,30 @@ export const Projects = () => {
               whileHover={{ y: -6 }}
               className="group relative gradient-border overflow-hidden rounded-3xl block"
             >
-              <div className={`relative aspect-[16/10] bg-gradient-to-br ${p.gradient} overflow-hidden`}>
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,hsl(0_0%_100%/0.15),transparent_60%)]" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="font-display text-3xl sm:text-4xl font-semibold opacity-30 group-hover:opacity-60 transition-opacity text-center px-4">
-                    {p.name}
-                  </div>
+              <div className="relative aspect-[16/10] overflow-hidden">
+                <img
+                  src={p.image}
+                  alt={`${p.name} preview`}
+                  loading="lazy" width={1280} height={800}
+                  className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                <div className="absolute top-4 left-4 flex flex-wrap gap-1.5">
+                  {p.tags.map((tag) => (
+                    <span key={tag} className="glass rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
-                <div className="absolute inset-0 bg-background/0 group-hover:bg-background/40 transition-colors" />
-                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6 translate-y-2 group-hover:translate-y-0 transition-transform">
+                <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
                   <div className="flex items-end justify-between gap-3">
-                    <div>
+                    <div className="min-w-0">
                       <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{p.category}</div>
-                      <div className="font-display text-lg sm:text-xl mt-0.5">{p.name}</div>
+                      <div className="font-display text-lg sm:text-xl mt-0.5 truncate">{p.name}</div>
                     </div>
-                    <span className="inline-flex items-center gap-1.5 glass rounded-full px-3 py-1.5 text-xs font-medium">
+                    <span className="shrink-0 inline-flex items-center gap-1.5 glass-strong rounded-full px-3 py-1.5 text-xs font-medium group-hover:bg-gradient-primary group-hover:text-primary-foreground transition-all">
                       {t.projects.visit}
-                      <ArrowUpRight className="w-3.5 h-3.5" />
+                      <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                     </span>
                   </div>
                 </div>
