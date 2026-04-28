@@ -7,7 +7,7 @@ const word = {
   hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
   visible: (i: number) => ({
     opacity: 1, y: 0, filter: "blur(0px)",
-    transition: { delay: i * 0.06, duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+    transition: { delay: i * 0.06, duration: 0.7, ease: "easeOut" as const },
   }),
 };
 
