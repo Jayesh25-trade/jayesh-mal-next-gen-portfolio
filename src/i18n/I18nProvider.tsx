@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode, createElement } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { DICTS, LANGUAGES, LangCode, Dict } from "./dictionaries";
 
 type Ctx = { lang: LangCode; setLang: (l: LangCode) => void; t: Dict; isRTL: boolean };
@@ -27,7 +27,7 @@ export function I18nProvider({ children }: { children: ReactNode }) {
   };
 
   const t = DICTS[lang] ?? DICTS.en;
-  return createElement(I18nContext.Provider, { value: { lang, setLang, t, isRTL } }, children);
+  return <I18nContext.Provider value={{ lang, setLang, t, isRTL }}>{children}</I18nContext.Provider>;
 }
 
 export function useI18n() {
