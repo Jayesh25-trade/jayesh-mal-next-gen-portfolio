@@ -1,72 +1,86 @@
 import { motion } from "framer-motion";
-import { Mail, MessageCircle, Send } from "lucide-react";
-import { useState } from "react";
+import { Mail, MessageCircle } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
-import { toast } from "sonner";
 
 const EMAIL = "jayeshneo07@gmail.com";
-const WHATSAPP = "https://wa.me/91XXXXXXXXXX?text=Hi%20Jayesh%2C%20I%20saw%20your%20portfolio%20and%20I%20am%20interested%20in%20your%20services";
+const PHONE = "918605601801";
+const WA_MESSAGE =
+  "Hi Jayesh, I saw your portfolio and I'd love to discuss a project with you.";
+const WHATSAPP = `https://wa.me/${PHONE}?text=${encodeURIComponent(WA_MESSAGE)}`;
+const MAILTO = `mailto:${EMAIL}?subject=${encodeURIComponent(
+  "Project enquiry from your portfolio"
+)}&body=${encodeURIComponent(
+  "Hi Jayesh,\n\nI saw your portfolio and I'd love to discuss a project with you.\n\nProject details:\n\nThanks!"
+)}`;
 
 export const Contact = () => {
   const { t } = useI18n();
-  const [form, setForm] = useState({ name: "", email: "", message: "" });
-
-  const submit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const subject = encodeURIComponent(`Project enquiry from ${form.name || "your site"}`);
-    const body = encodeURIComponent(`${form.message}\n\nFrom: ${form.name} (${form.email})`);
-    window.location.href = `mailto:${EMAIL}?subject=${subject}&body=${body}`;
-    toast.success(t.contact.sent);
-  };
 
   return (
     <section id="contact" className="relative py-20 sm:py-28">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
           <motion.div
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
             className="text-center mb-10"
           >
-            <h2 className="text-3xl sm:text-5xl font-display font-semibold gradient-text">{t.contact.title}</h2>
+            <h2 className="text-3xl sm:text-5xl font-display font-semibold gradient-text">
+              {t.contact.title}
+            </h2>
             <p className="mt-3 text-muted-foreground">{t.contact.subtitle}</p>
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-50px" }}
-            className="relative gradient-border p-5 sm:p-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            className="relative gradient-border p-6 sm:p-10"
           >
-            <form onSubmit={submit} className="space-y-4">
-              <input
-                required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder={t.contact.name}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-neon-cyan/60 focus:bg-white/[0.05] transition-all"
-              />
-              <input
-                required type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder={t.contact.email}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-neon-cyan/60 focus:bg-white/[0.05] transition-all"
-              />
-              <textarea
-                required rows={4} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })}
-                placeholder={t.contact.message}
-                className="w-full bg-white/[0.03] border border-white/10 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-neon-cyan/60 focus:bg-white/[0.05] transition-all resize-none"
-              />
-              <button
-                type="submit"
-                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-primary py-3.5 font-medium text-primary-foreground glow-primary hover:scale-[1.01] transition-transform"
+            <div className="grid gap-4 sm:grid-cols-2">
+              <a
+                href={WHATSAPP}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative overflow-hidden rounded-2xl bg-gradient-primary p-[1.5px] glow-primary transition-transform hover:scale-[1.02]"
               >
-                <Send className="w-4 h-4" /> {t.contact.send}
-              </button>
-            </form>
-
-            <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <a href={`mailto:${EMAIL}`} className="inline-flex items-center justify-center gap-2 rounded-xl glass px-4 py-3 text-sm hover:border-white/25 transition-colors">
-                <Mail className="w-4 h-4" /> {t.contact.emailMe}
+                <div className="flex h-full flex-col items-center justify-center gap-3 rounded-2xl bg-background/80 px-6 py-8 text-center backdrop-blur">
+                  <div className="rounded-full bg-gradient-primary p-3 text-primary-foreground">
+                    <MessageCircle className="h-6 w-6" />
+                  </div>
+                  <div className="text-lg font-semibold">Chat on WhatsApp</div>
+                  <div className="text-sm text-muted-foreground">
+                    +91 86056 01801
+                  </div>
+                  <div className="text-xs text-neon-cyan">
+                    Replies within a few hours
+                  </div>
+                </div>
               </a>
-              <a href={WHATSAPP} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl glass px-4 py-3 text-sm hover:border-white/25 transition-colors">
-                <MessageCircle className="w-4 h-4 text-neon-cyan" /> {t.contact.whatsapp}
+
+              <a
+                href={MAILTO}
+                className="group relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] p-6 text-center transition-all hover:border-white/25 hover:bg-white/[0.06]"
+              >
+                <div className="flex h-full flex-col items-center justify-center gap-3 px-2 py-6">
+                  <div className="rounded-full border border-white/15 bg-white/5 p-3">
+                    <Mail className="h-6 w-6 text-neon-cyan" />
+                  </div>
+                  <div className="text-lg font-semibold">Email me</div>
+                  <div className="break-all text-sm text-muted-foreground">
+                    {EMAIL}
+                  </div>
+                  <div className="text-xs text-neon-cyan">
+                    For detailed briefs
+                  </div>
+                </div>
               </a>
             </div>
+
+            <p className="mt-6 text-center text-xs text-muted-foreground">
+              Prefer something else? Tap WhatsApp for the fastest reply.
+            </p>
           </motion.div>
         </div>
       </div>
