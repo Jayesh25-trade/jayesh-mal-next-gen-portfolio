@@ -5,13 +5,16 @@ import foodzz from "@/assets/project-foodzz.jpg";
 import parth from "@/assets/project-parth.jpg";
 import formomatic from "@/assets/project-formomatic.jpg";
 import dowry from "@/assets/project-dowry.jpg";
+import maisonnorth from "@/assets/project-maisonnorth.jpg";
 
 const PROJECTS = [
+  { name: "MAISON NORTH", category: "Editorial fashion e-commerce", url: "https://style-haven-drab.vercel.app/", image: maisonnorth, tags: ["React", "TypeScript", "Framer Motion"] },
   { name: "Jimmyy Foodzz", category: "Food ordering platform", url: "https://jimmyy-fooddzz.vercel.app/", image: foodzz, tags: ["React", "Node", "Live orders"] },
   { name: "Parth Fuel Corporation", category: "Corporate website", url: "https://parthfuelcorporation.vercel.app/", image: parth, tags: ["Next.js", "SEO", "CMS"] },
   { name: "Formomatic PDF Pro", category: "Document tooling SaaS", url: "https://formomatic-pdf-pro.vercel.app/", image: formomatic, tags: ["React", "PDF.js", "Stripe"] },
   { name: "Dowry181", category: "Matrimonial product", url: "https://dowry181.vercel.app/", image: dowry, tags: ["React", "Auth", "Realtime"] },
 ];
+
 
 export const Projects = () => {
   const { t } = useI18n();
