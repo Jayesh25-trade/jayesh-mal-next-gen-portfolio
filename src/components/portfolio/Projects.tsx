@@ -8,7 +8,7 @@ import dowry from "@/assets/project-dowry.jpg";
 import maisonnorth from "@/assets/project-maisonnorth.jpg";
 
 const PROJECTS = [
-  { name: "MAISON NORTH", category: "Editorial fashion e-commerce", url: "https://style-haven-drab.vercel.app/", image: maisonnorth, tags: ["React", "TypeScript", "Framer Motion"] },
+  { name: "Maren & Studio", category: "European interior design practice — calm, organic, timeless spaces crafted from honest materials across 80+ projects in 12 countries.", url: "https://design-showcase-rho.vercel.app/", image: maisonnorth, tags: ["React", "TypeScript", "Framer Motion"] },
   { name: "Jimmyy Foodzz", category: "Food ordering platform", url: "https://jimmyy-fooddzz.vercel.app/", image: foodzz, tags: ["React", "Node", "Live orders"] },
   { name: "Parth Fuel Corporation", category: "Corporate website", url: "https://parthfuelcorporation.vercel.app/", image: parth, tags: ["Next.js", "SEO", "CMS"] },
   { name: "Formomatic PDF Pro", category: "Document tooling SaaS", url: "https://formomatic-pdf-pro.vercel.app/", image: formomatic, tags: ["React", "PDF.js", "Stripe"] },
