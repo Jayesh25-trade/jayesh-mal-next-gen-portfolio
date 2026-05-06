@@ -6,8 +6,10 @@ import parth from "@/assets/project-parth.jpg";
 import formomatic from "@/assets/project-formomatic.jpg";
 import dowry from "@/assets/project-dowry.jpg";
 import maisonnorth from "@/assets/project-maisonnorth.jpg";
+import atelier22 from "@/assets/project-atelier22.jpg";
 
 const PROJECTS = [
+  { name: "ATELIER 22", category: "Conceptual luxury fashion brand — quality over speed. Custom Vercel SSR adapter for TanStack Start with React 19, near-instant loads & perfect SEO.", url: "https://style-canvas-2s641spov-jayesh25-trades-projects.vercel.app/", image: atelier22, tags: ["React 19", "TanStack Start", "Vercel SSR"] },
   { name: "Maren & Studio", category: "European interior design practice — calm, organic, timeless spaces crafted from honest materials across 80+ projects in 12 countries.", url: "https://design-showcase-rho.vercel.app/", image: maisonnorth, tags: ["React", "TypeScript", "Framer Motion"] },
   { name: "Jimmyy Foodzz", category: "Food ordering platform", url: "https://jimmyy-fooddzz.vercel.app/", image: foodzz, tags: ["React", "Node", "Live orders"] },
   { name: "Parth Fuel Corporation", category: "Corporate website", url: "https://parthfuelcorporation.vercel.app/", image: parth, tags: ["Next.js", "SEO", "CMS"] },
