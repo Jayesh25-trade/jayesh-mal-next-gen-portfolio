@@ -7,8 +7,12 @@ import formomatic from "@/assets/project-formomatic.jpg";
 import dowry from "@/assets/project-dowry.jpg";
 import maisonnorth from "@/assets/project-maisonnorth.jpg";
 import atelier22 from "@/assets/project-atelier22.jpg";
+import resumezen from "@/assets/project-resumezen.jpg";
+import stemos from "@/assets/project-stemos.jpg";
 
 const PROJECTS = [
+  { name: "ResumeZen AI", category: "Premium multilingual voice-first resume builder — AI-powered ATS-friendly resumes through natural voice conversations in multiple Indian & international languages.", url: "https://career-compass-ai-five-eosin.vercel.app/", image: resumezen, tags: ["React", "Vite", "ElevenLabs", "Grok AI", "Razorpay"] },
+  { name: "STEMOS", category: "Next-gen multilingual AI-powered STEM learning platform — real-time AI tutoring, adaptive quizzes, gamified progress tracking & personalized learning paths.", url: "https://stemos-future-learn.vercel.app/", image: stemos, tags: ["React", "TypeScript", "Groq AI", "Supabase", "Tailwind"] },
   { name: "ATELIER 22", category: "Conceptual luxury fashion brand — quality over speed. Custom Vercel SSR adapter for TanStack Start with React 19, near-instant loads & perfect SEO.", url: "https://style-canvas-2s641spov-jayesh25-trades-projects.vercel.app/", image: atelier22, tags: ["React 19", "TanStack Start", "Vercel SSR"] },
   { name: "Maren & Studio", category: "European interior design practice — calm, organic, timeless spaces crafted from honest materials across 80+ projects in 12 countries.", url: "https://design-showcase-rho.vercel.app/", image: maisonnorth, tags: ["React", "TypeScript", "Framer Motion"] },
   { name: "Jimmyy Foodzz", category: "Food ordering platform", url: "https://jimmyy-fooddzz.vercel.app/", image: foodzz, tags: ["React", "Node", "Live orders"] },
