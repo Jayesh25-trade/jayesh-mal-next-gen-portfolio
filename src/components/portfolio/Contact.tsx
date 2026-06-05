@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Mail, MessageCircle } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 
-const EMAIL = "jayeshneo07@gmail.com";
+const EMAIL = "jimmy.developers007@gmail.com";
 const PHONE = "918605601801";
 const WA_MESSAGE =
   "Hi Jayesh, I saw your portfolio and I'd love to discuss a project with you.";

@@ -91,7 +91,7 @@ export const Hero = () => {
               {[
                 { Icon: Github, href: "https://github.com/" },
                 { Icon: Linkedin, href: "https://linkedin.com/" },
-                { Icon: Mail, href: "mailto:jayeshneo07@gmail.com" },
+                { Icon: Mail, href: "mailto:jimmy.developers007@gmail.com" },
               ].map(({ Icon, href }, i) => (
                 <a key={i} href={href} target="_blank" rel="noopener noreferrer"
                   className="w-10 h-10 rounded-full glass flex items-center justify-center hover:border-neon-cyan/40 hover:text-neon-cyan transition-colors">
