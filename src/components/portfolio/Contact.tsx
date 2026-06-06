@@ -11,7 +11,7 @@ const WA_MESSAGE =
 const WHATSAPP = `https://wa.me/${PHONE}?text=${encodeURIComponent(WA_MESSAGE)}`;
 
 // Set your Web3Forms Access Key here. You can get a free key instantly from https://web3forms.com
-const WEB3FORMS_ACCESS_KEY = "YOUR_ACCESS_KEY_HERE";
+const WEB3FORMS_ACCESS_KEY = "073d759a-58c6-4e0e-83d5-d22aa54728fc";
 
 export const Contact = () => {
   const { t } = useI18n();
