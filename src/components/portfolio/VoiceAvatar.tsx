@@ -5,9 +5,6 @@ import { useI18n } from "@/i18n/I18nProvider";
 import avatarImg from "@/assets/jayesh-avatar.png";
 import { toast } from "sonner";
 
-const VOICE_ID = "pNInz6obpgqjMhk4HpMu"; // Adam - deep male voice
-const API_KEY = "sk_ef13adfe5cbf044c61eba8806196a2e515f27bfd64e6811b";
-
 const SCRIPTS: Record<string, string> = {
   en: "Hi! I'm Jayesh Mal, a full-stack developer. I design and build next-generation websites and web apps that load fast, look premium, and help grow your business. Tell me about your project, and let's build something powerful together!",
   hi: "नमस्ते! मैं जयेश माल हूँ, एक फुल-स्टैक डेवलपर। मैं अगली पीढ़ी की वेबसाइट्स और वेब ऐप्स डिज़ाइन और विकसित करता हूँ जो तेज़ी से लोड होते हैं, दिखने में प्रीमियम हैं और आपके बिज़नेस को बढ़ने में मदद करते हैं। अपने प्रोजेक्ट के बारे में बताएँ, और चलिए मिलकर कुछ शक्तिशाली बनाते हैं!",
@@ -19,7 +16,67 @@ const SCRIPTS: Record<string, string> = {
   pt: "Olá! Sou Jayesh Mal, um desenvolvedor full-stack. Eu projeto e construo sites e web apps de última geração que carregam rápido, têm aparência premium e ajudam a expandir seus negócios. Fale-me sobre o seu projeto e vamos construir algo poderoso juntos!"
 };
 
+const UI_STRINGS: Record<string, { title: string; langLabel: string; play: string; pause: string; toastErr: string }> = {
+  en: {
+    title: "Jayesh's AI Assistant",
+    langLabel: "Language",
+    play: "Listen to Intro",
+    pause: "Pause Intro",
+    toastErr: "Failed to generate AI voice introduction. Please try again."
+  },
+  hi: {
+    title: "जयेश का एआई सहायक",
+    langLabel: "भाषा",
+    play: "परिचय सुनें",
+    pause: "विराम दें",
+    toastErr: "एआई वॉयस परिचय उत्पन्न करने में विफल। कृपया पुन: प्रयास करें।"
+  },
+  mr: {
+    title: "जयेशचा एआई सहाय्यक",
+    langLabel: "भाषा",
+    play: "परिचय ऐका",
+    pause: "थांबवा",
+    toastErr: "एआय व्हॉइस परिचय तयार करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा."
+  },
+  es: {
+    title: "Asistente de IA de Jayesh",
+    langLabel: "Idioma",
+    play: "Escuchar Intro",
+    pause: "Pausar Intro",
+    toastErr: "Error al generar la introducción de voz de IA. Inténtalo de nuevo."
+  },
+  fr: {
+    title: "Assistant IA de Jayesh",
+    langLabel: "Langue",
+    play: "Écouter l'intro",
+    pause: "Pause",
+    toastErr: "Échec de la génération de l'introduction vocale IA. Veuillez réessayer."
+  },
+  de: {
+    title: "Jayeshs KI-Assistent",
+    langLabel: "Sprache",
+    play: "Intro anhören",
+    pause: "Pause",
+    toastErr: "Fehler beim Generieren der KI-Sprachvorstellung. Bitte versuchen Sie es erneut."
+  },
+  it: {
+    title: "Assistente IA di Jayesh",
+    langLabel: "Lingua",
+    play: "Ascolta l'intro",
+    pause: "Pausa",
+    toastErr: "Impossibile generare l'introduzione vocale AI. Riprova."
+  },
+  pt: {
+    title: "Assistente de IA do Jayesh",
+    langLabel: "Idioma",
+    play: "Ouvir Introdução",
+    pause: "Pausar",
+    toastErr: "Falha ao gerar a introdução de voz de IA. Tente novamente."
+  }
+};
+
 const getScript = (lang: string) => SCRIPTS[lang] || SCRIPTS.en;
+const getUIStrings = (lang: string) => UI_STRINGS[lang] || UI_STRINGS.en;
 
 export const VoiceAvatar = () => {
   const { lang } = useI18n();
@@ -157,28 +214,24 @@ export const VoiceAvatar = () => {
 
     setIsLoading(true);
     let audioUrl = cachedAudios[lang];
+    const ui = getUIStrings(lang);
 
     try {
       if (!audioUrl) {
         const scriptText = getScript(lang);
-        const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${VOICE_ID}`, {
+        // Request audio from our serverless Vercel function to avoid CORS issues and secure the key
+        const response = await fetch("/api/tts", {
           method: "POST",
           headers: {
-            "xi-api-key": API_KEY,
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
             text: scriptText,
-            model_id: "eleven_multilingual_v2",
-            voice_settings: {
-              stability: 0.5,
-              similarity_boost: 0.75,
-            },
           }),
         });
 
         if (!response.ok) {
-          throw new Error(`ElevenLabs returned status: ${response.status}`);
+          throw new Error(`TTS serverless function returned status: ${response.status}`);
         }
 
         const blob = await response.blob();
@@ -220,7 +273,7 @@ export const VoiceAvatar = () => {
       };
     } catch (err) {
       console.error(err);
-      toast.error("Failed to generate AI voice introduction. Please verify your connection.");
+      toast.error(ui.toastErr);
       setIsLoading(false);
     }
   };
@@ -231,6 +284,7 @@ export const VoiceAvatar = () => {
   };
 
   const script = getScript(lang);
+  const ui = getUIStrings(lang);
 
   return (
     <div className="fixed bottom-6 right-6 z-[80] flex flex-col items-end gap-3 select-none">
@@ -247,7 +301,7 @@ export const VoiceAvatar = () => {
             <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-neon-cyan" />
-                <span className="font-display font-semibold text-sm">Jayesh's AI Assistant</span>
+                <span className="font-display font-semibold text-sm">{ui.title}</span>
               </div>
               <button
                 onClick={toggleOpen}
@@ -261,7 +315,7 @@ export const VoiceAvatar = () => {
             <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 max-h-[140px] overflow-y-auto text-xs sm:text-sm leading-relaxed text-foreground/80 scrollbar-thin">
               <div className="flex items-center gap-1.5 mb-2 text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">
                 <Languages className="w-3.5 h-3.5 text-neon-purple" />
-                <span>Language: {lang.toUpperCase()}</span>
+                <span>{ui.langLabel}: {lang.toUpperCase()}</span>
               </div>
               <p className={isPlaying ? "text-foreground transition-colors" : "text-muted-foreground"}>
                 {script}
@@ -284,12 +338,12 @@ export const VoiceAvatar = () => {
                 ) : isPlaying ? (
                   <>
                     <Pause className="w-4 h-4 fill-current" />
-                    <span>Pause Intro</span>
+                    <span>{ui.pause}</span>
                   </>
                 ) : (
                   <>
                     <Play className="w-4 h-4 fill-current" />
-                    <span>Listen to Intro</span>
+                    <span>{ui.play}</span>
                   </>
                 )}
               </button>
