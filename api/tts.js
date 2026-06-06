@@ -21,7 +21,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: 'Text is required' });
   }
 
-  const VOICE_ID = "pNInz6obpgqjMhk4HpMu"; // Adam
+  const VOICE_ID = "IKne3meq5aSn9XLyUdCD"; // Charlie (Deep, Confident, Energetic)
   const API_KEY = "sk_ef13adfe5cbf044c61eba8806196a2e515f27bfd64e6811b";
 
   try {
