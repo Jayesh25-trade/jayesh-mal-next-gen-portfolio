@@ -33,8 +33,8 @@ export const Navbar = () => {
       >
         <div className={`mx-auto max-w-6xl flex items-center justify-between rounded-full px-3 sm:px-5 py-2 sm:py-3 transition-all ${scrolled ? "glass-strong" : "glass"}`}>
           <a href="#top" className="flex items-center gap-2 font-display font-semibold text-sm sm:text-base">
-            <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-primary glow-primary flex items-center justify-center text-primary-foreground text-xs">JM</span>
-            <span className="hidden xs:inline">Jayesh Mal</span>
+            <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-gradient-primary glow-primary flex items-center justify-center text-primary-foreground text-xs">JD</span>
+            <span className="hidden xs:inline">Jimmzzz Developers</span>
           </a>
           <nav className="hidden md:flex items-center gap-1">
             {links.map((l) => (

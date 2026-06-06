@@ -44,13 +44,13 @@ export const About = () => {
               <span className="text-muted-foreground">About me</span>
             </div>
             <h2 className="text-3xl sm:text-5xl font-display font-semibold leading-tight">
-              Hi, I'm <span className="gradient-text">Jayesh Mal</span> —
-              a full-stack developer building products people love.
+              We are <span className="gradient-text">Jimmzzz Developers</span> —
+              a next-gen web development agency building products people love.
             </h2>
             <p className="mt-5 text-muted-foreground leading-relaxed">
-              I design and engineer modern web experiences end-to-end — from concept,
-              to a polished UI, to a production-grade backend. I obsess over performance,
-              motion, and the tiny details that make a product feel premium.
+              We design and engineer modern web experiences end-to-end — from concept,
+              to a polished UI, to a production-grade backend. Led by founder Jayesh Mal,
+              our studio obsesses over performance, motion, and the tiny details that make a product feel premium.
             </p>
 
             <ul className="mt-7 space-y-3">

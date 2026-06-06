@@ -3,7 +3,7 @@ import { Quote, Star } from "lucide-react";
 
 const TESTIMONIALS = [
   {
-    quote: "Jayesh delivered our billing system 2 weeks ahead of schedule. Sales tracking is now effortless and our team loves it.",
+    quote: "Jimmzzz Developers delivered our billing system 2 weeks ahead of schedule. Sales tracking is now effortless and our team loves it.",
     name: "Maheshwari Group",
     role: "Retail business",
     initials: "MG",
@@ -36,7 +36,7 @@ export const Testimonials = () => (
         <h2 className="text-3xl sm:text-5xl font-display font-semibold">
           <span className="gradient-text">Loved by teams</span>
         </h2>
-        <p className="mt-3 text-muted-foreground">Real words from real clients I've shipped products with.</p>
+        <p className="mt-3 text-muted-foreground">Real words from real clients we've shipped products with.</p>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">

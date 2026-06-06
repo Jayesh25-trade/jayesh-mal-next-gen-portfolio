@@ -112,7 +112,7 @@ export const Hero = () => {
             <div className="relative gradient-border rounded-[2rem] overflow-hidden aspect-square">
               <img
                 src={portrait}
-                alt="Portrait of Jayesh Mal, full-stack developer"
+                alt="Portrait of Jayesh Mal, founder of Jimmzzz Developers"
                 width={1024} height={1024}
                 className="w-full h-full object-cover"
               />

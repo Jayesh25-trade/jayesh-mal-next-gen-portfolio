@@ -7,7 +7,7 @@ import { toast } from "sonner";
 const EMAIL = "jimmy.developers007@gmail.com";
 const PHONE = "918605601801";
 const WA_MESSAGE =
-  "Hi Jayesh, I saw your portfolio and I'd love to discuss a project with you.";
+  "Hi Jimmzzz Developers, I saw your portfolio and I'd love to discuss a project with you.";
 const WHATSAPP = `https://wa.me/${PHONE}?text=${encodeURIComponent(WA_MESSAGE)}`;
 
 // Set your Web3Forms Access Key here. You can get a free key instantly from https://web3forms.com
@@ -43,8 +43,8 @@ export const Contact = () => {
           name,
           email,
           message,
-          subject: `New Portfolio Message from ${name}`,
-          from_name: "Jayesh Mal Portfolio",
+          subject: `New Client Message to Jimmzzz Developers from ${name}`,
+          from_name: "Jimmzzz Developers Portfolio",
         }),
       });
 

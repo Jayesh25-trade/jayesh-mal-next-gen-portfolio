@@ -1,72 +1,72 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX, X, Play, Pause, Sparkles, Languages, HelpCircle } from "lucide-react";
+import { Volume2, VolumeX, X, Play, Pause, Sparkles, Languages } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 import avatarImg from "@/assets/jayesh-avatar.png";
 import { toast } from "sonner";
 
 const SECTION_SCRIPTS: Record<string, Record<string, string>> = {
   top: {
-    en: "Welcome to my portfolio! I build next-generation websites and web apps that are fast, premium, and designed to convert.",
-    hi: "मेरे पोर्टफोलियो में आपका स्वागत है! मैं अगली पीढ़ी की वेबसाइट और वेब ऐप बनाता हूँ जो तेज़, प्रीमियम और कन्वर्ज़न के लिए डिज़ाइन की गई हैं।",
-    mr: "माझ्या पोर्टफोलिओमध्ये आपले स्वागत आहे! मी पुढच्या पिढीच्या वेबसाइट आणि वेब अ‍ॅप्स बनवतो ज्या वेगवान, प्रीमियम आणि कन्व्हर्जनसाठी डिझाइन केलेल्या आहेत.",
-    es: "¡Bienvenido a mi portafolio! Creo sitios web y aplicaciones web de última generación que son rápidos, premium y diseñados para convertir.",
-    fr: "Bienvenue sur mon portfolio! Je crée des sites web et des applications web de nouvelle génération qui sont rapides, premium et conçus pour convertir."
+    en: "Welcome to Jimmzzz Developers! We are a next-generation web development agency building fast, premium websites and web apps designed to convert.",
+    hi: "जियमज़ डेवेलपर्स (Jimmzzz Developers) में आपका स्वागत है! हम एक अगली पीढ़ी की वेब डेवलपमेंट एजेंसी हैं जो तेज़, प्रीमियम और कन्वर्ज़न के लिए वेबसाइट और वेब ऐप्स बनाती हैं।",
+    mr: "जियमज़ डेव्हलपर्स (Jimmzzz Developers) मध्ये आपले स्वागत आहे! आम्ही एक पुढच्या पिढीची वेब डेव्हलपमेंट एजन्सी आहोत जी वेगवान, प्रीमियम आणि कन्व्हर्जनसाठी वेबसाइट आणि वेब अ‍ॅप्स बनवते.",
+    es: "¡Bienvenido a Jimmzzz Developers! Somos una agencia de desarrollo web de nueva generación que crea sitios y aplicaciones web rápidos, premium y diseñados para convertir.",
+    fr: "Bienvenue chez Jimmzzz Developers! Nous sommes une agence de développement web de nouvelle génération qui crée des sites et applications web rapides, premium et conçus pour convertir."
   },
   about: {
-    en: "Here is a bit about me. I design and engineer modern web experiences end-to-end, focusing on performance, motion, and visual details.",
-    hi: "यहाँ मेरे बारे में कुछ जानकारी है। मैं परफॉर्मेंस, मोशन और विज़ुअल डिटेल्स पर ध्यान केंद्रित करते हुए शुरू से अंत तक आधुनिक वेब अनुभव डिज़ाइन करता हूँ।",
-    mr: "येथे माझ्याबद्दल काही माहिती आहे. मी कार्यक्षमता, मोशन आणि व्हिज्युअल डिटेल्सवर लक्ष केंद्रित करून सुरुवातीपासून शेवटपर्यंत आधुनिक वेब अनुभव डिझाइन करतो.",
-    es: "Aquí hay un poco sobre mí. Diseño y construyo experiencias web modernas de principio a fin, enfocándome en el rendimiento, el movimiento y los detalles visuales.",
-    fr: "Voici un peu d'histoire sur moi. Je conçois et développe des expériences web modernes de bout en bout, en me concentrant sur la performance, les animations et les détails visuels."
+    en: "Here is a bit about us. We design and engineer modern web experiences end-to-end. Led by founder Jayesh Mal, our team focuses on performance, motion, and visual details.",
+    hi: "यहाँ हमारे बारे में जानकारी है। हम शुरू से अंत तक आधुनिक वेब अनुभव डिज़ाइन करते हैं। हमारे फाउंडर जयेश माल के नेतृत्व में, हमारी टीम परफॉर्मेंस, मोशन और विज़ुअल डिटेल्स पर ध्यान केंद्रित करती है।",
+    mr: "येथे आमच्याबद्दल माहिती आहे. आम्ही सुरुवातीपासून शेवटपर्यंत आधुनिक वेब अनुभव डिझाइन करतो. आमचे संस्थापक जयेश माल यांच्या नेतृत्वाखाली, आमची टीम कार्यक्षमता, मोशन आणि व्हिज्युअल डिटेल्सवर लक्ष केंद्रित करते.",
+    es: "Aquí hay un poco sobre nosotros. Diseñamos y construimos experiencias web modernas de principio a fin. Liderado por el fundador Jayesh Mal, nuestro equipo se enfoca en el rendimiento, el movimiento y los detalles visuales.",
+    fr: "Voici un aperçu de notre agence. Nous concevons et développons des expériences web modernes de bout en bout. Dirigée par le fondateur Jayesh Mal, notre équipe se concentre sur la performance, les animations et les détails visuels."
   },
   work: {
-    en: "Here is a selection of my work, including AI SaaS platforms, corporate portals, and luxury e-commerce brands shipped to real users.",
-    hi: "यहाँ मेरे काम का एक चयन है, जिसमें एआई सास प्लेटफॉर्म, कॉर्पोरेट पोर्टल और वास्तविक उपयोगकर्ताओं के लिए बनाए गए लक्जरी ई-कॉमर्स ब्रांड शामिल हैं।",
-    mr: "येथे माझ्या कामाची निवड आहे, ज्यामध्ये एआय सास प्लॅटफॉर्म, कॉर्पोरेट पोर्टल्स आणि वास्तविक वापरकर्त्यांसाठी तयार केलेले लक्झरी ई-कॉमर्स ब्रँड समाविष्ट आहेत.",
-    es: "Aquí hay una selección de mi trabajo, incluyendo plataformas SaaS de IA, portales corporativos y marcas de comercio electrónico de lujo.",
-    fr: "Voici une sélection de mes réalisations, comprenant des plateformes SaaS d'IA, des portails d'entreprise et des marques de e-commerce de luxe."
+    en: "Here is a selection of our work, including AI SaaS platforms, corporate portals, and luxury e-commerce brands shipped to real clients.",
+    hi: "यहाँ हमारे काम का एक चयन है, जिसमें एआई सास प्लेटफॉर्म, कॉर्पोरेट पोर्टल और वास्तविक ग्राहकों के लिए बनाए गए लक्जरी ई-कॉमर्स ब्रांड शामिल हैं।",
+    mr: "येथे आमच्या कामाची निवड आहे, ज्यामध्ये एआय सास प्लॅटफॉर्म, कॉर्पोरेट पोर्टल्स आणि वास्तविक ग्राहकांसाठी तयार केलेले लक्झरी ई-कॉमर्स ब्रँड समाविष्ट आहेत.",
+    es: "Aquí hay una selección de nuestro trabajo, incluyendo plataformas SaaS de IA, portales corporativos y marcas de comercio electrónico de lujo creadas para clientes reales.",
+    fr: "Voici une sélection de nos projets, comprenant des plateformes SaaS d'IA, des portails d'entreprise et des marques de e-commerce de luxe développées pour nos clients."
   },
   process: {
-    en: "My workflow is simple and collaborative: Discover, Design, Build, and Launch. We align on your business goals first.",
-    hi: "मेरा काम करने का तरीका सरल और सहयोगात्मक है: खोजें, डिज़ाइन करें, निर्माण करें और लॉन्च करें। हम सबसे पहले आपके व्यावसायिक लक्ष्यों पर ध्यान केंद्रित करते हैं।",
-    mr: "माझी काम करण्याची पद्धत सोपी आणि सहयोगात्मक आहे: शोध, डिझाइन, निर्मिती आणि लाँच. आम्ही प्रथम तुमच्या व्यावसायिक उद्दिष्टांवर लक्ष केंद्रित करतो.",
-    es: "Mi flujo de trabajo es simple y colaborativo: Descubrir, Diseñar, Construir y Lanzar. Primero nos alineamos con tus objetivos comerciales.",
-    fr: "Mon flux de travail est simple et collaboratif: Découverte, Conception, Développement et Lancement. Nous nous alignons d'abord sur vos objectifs."
+    en: "Our workflow is simple and collaborative: Discover, Design, Build, and Launch. We align on your business goals first.",
+    hi: "हमारा काम करने का तरीका सरल और सहयोगात्मक है: खोजें, डिज़ाइन करें, निर्माण करें और लॉन्च करें। हम सबसे पहले आपके व्यावसायिक लक्ष्यों पर ध्यान केंद्रित करते हैं।",
+    mr: "आमची काम करण्याची पद्धत सोपी आणि सहयोगात्मक आहे: शोध, डिझाइन, निर्मिती आणि लाँच. आम्ही प्रथम तुमच्या व्यावसायिक उद्दिष्टांवर लक्ष केंद्रित करतो.",
+    es: "Nuestro flujo de trabajo es simple y colaborativo: Descubrir, Diseñar, Construir y Lanzar. Primero nos alineamos con tus objetivos comerciales.",
+    fr: "Notre flux de travail es simple et collaboratif: Découverte, Conception, Développement et Lancement. Nous nous alignons d'abord sur vos objectifs commerciaux."
   },
   services: {
-    en: "I offer end-to-end services: Web App Development, Landing Pages, Dashboards, and API automation to help grow your business.",
-    hi: "मैं शुरू से अंत तक सेवाएँ प्रदान करता हूँ: वेब ऐप डेवलपमेंट, लैंडिंग पेज, डैशबोर्ड और आपके बिज़नेस को बढ़ाने में मदद करने के लिए एपीआई ऑटोमेशन।",
-    mr: "मी सुरुवातीपासून शेवटपर्यंत सेवा देतो: वेब अ‍ॅप डेव्हलपमेंट, लँडिंग पेजेस, डॅशबोर्ड आणि तुमचा व्यवसाय वाढवण्यास मदत करण्यासाठी एपीआई ऑटोमेशन.",
-    es: "Ofrezco servicios de principio a fin: desarrollo de aplicaciones web, páginas de destino, paneles de control y automatización de API.",
-    fr: "Je propose des services complets: développement d'applications web, landing pages, tableaux de bord et automatisation d'API."
+    en: "We offer end-to-end services: Web App Development, Landing Pages, Dashboards, and API automation to help grow your business.",
+    hi: "हम शुरू से अंत तक सेवाएँ प्रदान करते हैं: वेब ऐप डेवलपमेंट, लैंडिंग पेज, डैशबोर्ड और आपके बिज़नेस को बढ़ाने में मदद करने के लिए एपीआई ऑटोमेशन।",
+    mr: "आम्ही सुरुवातीपासून शेवटपर्यंत सेवा देतो: वेब अ‍ॅप डेव्हलपमेंट, लँडिंग पेजेस, डॅशबोर्ड आणि तुमचा व्यवसाय वाढवण्यास मदत करण्यासाठी एपीआय ऑटोमेशन.",
+    es: "Ofrecemos servicios de principio a fin: desarrollo de aplicaciones web, páginas de destino, paneles de control y automatización de API para hacer crecer tu negocio.",
+    fr: "Nous proposons des services complets: développement d'applications web, landing pages, tableaux de bord et automatisation d'API pour faire grandir votre entreprise."
   },
   stack: {
-    en: "These are the modern tools I reach for every day, including React, Next.js, Node, PostgreSQL, and Framer Motion.",
-    hi: "ये वे आधुनिक टूल्स हैं जिनका मैं रोज़ाना उपयोग करता हूँ, जैसे कि React, Next.js, Node, PostgreSQL और Framer Motion।",
-    mr: "ही ती आधुनिक साधने आहेत जी मी दररोज वापरतो, जसे की React, Next.js, Node, PostgreSQL आणि Framer Motion.",
-    es: "Estas son las herramientas modernas que utilizo todos los días, incluyendo React, Next.js, Node, PostgreSQL y Framer Motion.",
-    fr: "Voici les outils modernes que j'utilise au quotidien, notamment React, Next.js, Node, PostgreSQL et Framer Motion."
+    en: "These are the modern tools we reach for every day, including React, Next.js, Node, PostgreSQL, and Framer Motion.",
+    hi: "ये वे आधुनिक टूल्स हैं जिनका हम रोज़ाना उपयोग करते हैं, जैसे कि React, Next.js, Node, PostgreSQL और Framer Motion।",
+    mr: "ही ती आधुनिक साधने आहेत जी आम्ही दररोज वापरतो, जसे की React, Next.js, Node, PostgreSQL आणि Framer Motion.",
+    es: "Estas son las herramientas modernas que utilizamos todos los días, incluyendo React, Next.js, Node, PostgreSQL y Framer Motion.",
+    fr: "Voici les outils modernes que nous utilisons au quotidien, notamment React, Next.js, Node, PostgreSQL et Framer Motion."
   },
   testimonials: {
-    en: "Here are reviews from real clients I've worked with. I always focus on speed, communication, and business outcomes.",
-    hi: "यहाँ उन वास्तविक ग्राहकों की समीक्षाएं हैं जिनके साथ मैंने काम किया है। मैं हमेशा गति, संचार और व्यावसायिक परिणामों पर ध्यान केंद्रित करता हूँ।",
-    mr: "येथे मी ज्यांच्यासोबत काम केले आहे अशा वास्तविक ग्राहकांची पुनरावलोकने आहेत. मी नेहमी वेग, संवाद आणि व्यावसायिक परिणामांवर लक्ष केंद्रित करतो.",
-    es: "Aquí hay testimonios de clientes reales con los que he trabajado. Siempre me enfoco en la velocidad, la comunicación y los resultados.",
-    fr: "Voici les retours de clients réels avec lesquels j'ai travaillé. Je me concentre toujours sur la rapidité, la communication et les résultats."
+    en: "Here are reviews from real clients we've worked with. We always focus on speed, communication, and business outcomes.",
+    hi: "यहाँ उन वास्तविक ग्राहकों की समीक्षाएं हैं जिनके साथ हमने काम किया है। हम हमेशा गति, संचार और व्यावसायिक परिणामों पर ध्यान केंद्रित करते हैं।",
+    mr: "येथे आम्ही ज्यांच्यासोबत काम केले आहे अशा वास्तविक ग्राहकांची पुनरावलोकने आहेत। आम्ही नेहमी वेग, संवाद आणि व्यावसायिक परिणामांवर लक्ष केंद्रित करतो।",
+    es: "Aquí hay testimonios de clientes reales con los que hemos trabajado. Siempre nos enfocamos en la velocidad, la comunicación y los resultados de negocio.",
+    fr: "Voici les retours de clients réels avec lesquels nous avons travaillé. Nous nous concentrons toujours sur la rapidité, la communication et les résultats."
   },
   contact: {
-    en: "Let's build something powerful together! Send me a message here or contact me directly on WhatsApp to get started.",
-    hi: "चलिए मिलकर कुछ शक्तिशाली बनाते हैं! शुरू करने के लिए मुझे यहाँ संदेश भेजें या सीधे WhatsApp पर संपर्क करें।",
-    mr: "चला मिळून काहीतरी शक्तिशाली बनवूया! सुरू करण्यासाठी मला येथे संदेश पाठवा किंवा थेट WhatsApp वर संपर्क करा.",
-    es: "¡Construyamos algo poderoso juntos! Envíame un mensaje aquí o contáctame directamente por WhatsApp para comenzar.",
-    fr: "Construisons quelque chose de puissant ensemble! Envoyez-moi un message ici ou contactez-moi directement sur WhatsApp."
+    en: "Let's build something powerful together! Send us a message here or contact us directly on WhatsApp to get started.",
+    hi: "चलिए मिलकर कुछ शक्तिशाली बनाते हैं! शुरू करने के लिए हमें यहाँ संदेश भेजें या सीधे WhatsApp पर संपर्क करें।",
+    mr: "चला मिळून काहीतरी शक्तिशाली बनवूया! सुरू करण्यासाठी आम्हाला येथे संदेश पाठवा किंवा थेट WhatsApp वर संपर्क करा.",
+    es: "¡Construyamos algo poderoso juntos! Envános un mensaje aquí o contáctanos directamente por WhatsApp para comenzar.",
+    fr: "Construisons quelque chose de puissant ensemble! Envoyez-nous un message ici ou contactez-nous directement sur WhatsApp pour commencer."
   }
 };
 
 const UI_STRINGS: Record<string, { title: string; langLabel: string; play: string; pause: string; toastErr: string; guideActive: string; guideInactive: string }> = {
   en: {
-    title: "Jayesh's AI Assistant",
+    title: "Jimmzzz AI Assistant",
     langLabel: "Language",
     play: "Enable Audio Guide",
     pause: "Pause Audio Guide",
@@ -75,7 +75,7 @@ const UI_STRINGS: Record<string, { title: string; langLabel: string; play: strin
     guideInactive: "🔊 Click below to enable AI Voice Guide"
   },
   hi: {
-    title: "जयेश का एआई सहायक",
+    title: "जियमज़ एआई सहायक",
     langLabel: "भाषा",
     play: "ऑडियो गाइड सक्षम करें",
     pause: "ऑडियो गाइड रोकें",
@@ -84,7 +84,7 @@ const UI_STRINGS: Record<string, { title: string; langLabel: string; play: strin
     guideInactive: "🔊 एआई वॉयस गाइड सक्षम करने के लिए नीचे क्लिक करें"
   },
   mr: {
-    title: "जयेशचा एआई सहाय्यक",
+    title: "जियमज़ एआई सहाय्यक",
     langLabel: "भाषा",
     play: "ऑडिओ मार्गदर्शक सुरू करा",
     pause: "ऑडिओ मार्गदर्शक थांबवा",
@@ -93,7 +93,7 @@ const UI_STRINGS: Record<string, { title: string; langLabel: string; play: strin
     guideInactive: "🔊 एआय व्हॉइस मार्गदर्शक सुरू करण्यासाठी खाली क्लिक करा"
   },
   es: {
-    title: "Asistente de IA de Jayesh",
+    title: "Asistente de IA de Jimmzzz",
     langLabel: "Idioma",
     play: "Activar Guía de Voz",
     pause: "Pausar Guía de Voz",
@@ -102,7 +102,7 @@ const UI_STRINGS: Record<string, { title: string; langLabel: string; play: strin
     guideInactive: "🔊 Haz clic abajo para activar la guía de voz"
   },
   fr: {
-    title: "Assistant IA de Jayesh",
+    title: "Assistant IA de Jimmzzz",
     langLabel: "Langue",
     play: "Activer le guide audio",
     pause: "Pauser le guide audio",
@@ -477,10 +477,10 @@ export const VoiceAvatar = () => {
             onClick={toggleOpen}
           >
             <div className="font-semibold text-neon-cyan flex items-center gap-1.5">
-              <span>👋 Hi, I'm Jayesh!</span>
+              <span>👋 Welcome to Jimmzzz!</span>
             </div>
             <p className="text-muted-foreground">
-              Click here to enable my AI Audio Guide. It will introduce sections as you scroll!
+              Click here to enable our AI Audio Guide. It will introduce sections as you scroll!
             </p>
             <div className="absolute right-6 -bottom-1.5 w-3 h-3 bg-card border-r border-b border-white/10 transform rotate-45" />
           </motion.div>
@@ -513,7 +513,7 @@ export const VoiceAvatar = () => {
         <div className="relative w-14 h-14 rounded-full overflow-hidden border border-white/10 bg-background/50 backdrop-blur z-10">
           <img
             src={avatarImg}
-            alt="Jayesh 3D Avatar"
+            alt="Jimmzzz Developers AI Assistant Avatar"
             width={56}
             height={56}
             className={`w-full h-full object-cover transition-transform duration-300 group-hover:scale-105 ${
