@@ -9,7 +9,7 @@ const STEPS = [
 ];
 
 export const Process = () => (
-  <section className="relative py-20 sm:py-28">
+  <section id="process" className="relative py-20 sm:py-28">
     <div className="container mx-auto px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}

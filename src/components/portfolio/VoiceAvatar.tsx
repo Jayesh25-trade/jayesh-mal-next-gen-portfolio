@@ -1,81 +1,122 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Volume2, VolumeX, X, Play, Pause, Sparkles, Languages } from "lucide-react";
+import { Volume2, VolumeX, X, Play, Pause, Sparkles, Languages, HelpCircle } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 import avatarImg from "@/assets/jayesh-avatar.png";
 import { toast } from "sonner";
 
-const SCRIPTS: Record<string, string> = {
-  en: "Hi! I'm Jayesh Mal, a full-stack developer. I design and build next-generation websites and web apps that load fast, look premium, and help grow your business. Tell me about your project, and let's build something powerful together!",
-  hi: "नमस्ते! मैं जयेश माल हूँ, एक फुल-स्टैक डेवलपर। मैं अगली पीढ़ी की वेबसाइट्स और वेब ऐप्स डिज़ाइन और विकसित करता हूँ जो तेज़ी से लोड होते हैं, दिखने में प्रीमियम हैं और आपके बिज़नेस को बढ़ने में मदद करते हैं। अपने प्रोजेक्ट के बारे में बताएँ, और चलिए मिलकर कुछ शक्तिशाली बनाते हैं!",
-  mr: "नमस्कार! मी जयेश माल आहे, एक फुल-स्टॅक डेव्हलपर. मी पुढच्या पिढीच्या वेबसाइट्स आणि वेब अ‍ॅप्स डिझाइन आणि विकसित करतो ज्या वेगाने लोड होतात, प्रीमियम दिसतात आणि तुमचा व्यवसाय वाढवण्यास मदत करतात. मला तुमच्या प्रोजेक्टबद्दल सांगा, आणि चला मिळून काहीतरी शक्तिशाली बनवूया!",
-  es: "¡Hola! Soy Jayesh Mal, un desarrollador full-stack. Diseño y construyo sitios web y aplicaciones web de última generación que se cargan rápido, se ven premium y ayudan a hacer crecer tu negocio. ¡Cuéntame sobre tu proyecto y construyamos algo poderoso juntos!",
-  fr: "Salut! Je suis Jayesh Mal, un développeur spécialisé. Je conçois et construis des sites web et des applications web de nouvelle génération qui se chargent rapidement, ont un aspect premium et aident à développer votre entreprise. Parlez-moi de votre projet et construisons quelque chose de puissant ensemble!",
-  de: "Hallo! Ich bin Jayesh Mal, ein Full-Stack-Entwickler. Ich entwerfe und baue Websites und Web-Apps der nächsten Generation, die schnell geladen werden, hochwertig aussehen und Ihr Unternehmen beim Wachstum unterstützen. Erzählen Sie mir von Ihrem Projekt, und lassen Sie uns gemeinsam etwas Mächtiges aufbauen!",
-  it: "Ciao! Sono Jayesh Mal, uno sviluppatore full-stack. Progetto e creo siti Web e app Web di nuova generazione che si caricano velocemente, hanno un aspetto premium e aiutano a far crescere la tua attività. Parlami del tuo progetto e costruiamo qualcosa di potente insieme!",
-  pt: "Olá! Sou Jayesh Mal, um desenvolvedor full-stack. Eu projeto e construo sites e web apps de última geração que carregam rápido, têm aparência premium e ajudam a expandir seus negócios. Fale-me sobre o seu projeto e vamos construir algo poderoso juntos!"
+const SECTION_SCRIPTS: Record<string, Record<string, string>> = {
+  top: {
+    en: "Welcome to my portfolio! I build next-generation websites and web apps that are fast, premium, and designed to convert.",
+    hi: "मेरे पोर्टफोलियो में आपका स्वागत है! मैं अगली पीढ़ी की वेबसाइट और वेब ऐप बनाता हूँ जो तेज़, प्रीमियम और कन्वर्ज़न के लिए डिज़ाइन की गई हैं।",
+    mr: "माझ्या पोर्टफोलिओमध्ये आपले स्वागत आहे! मी पुढच्या पिढीच्या वेबसाइट आणि वेब अ‍ॅप्स बनवतो ज्या वेगवान, प्रीमियम आणि कन्व्हर्जनसाठी डिझाइन केलेल्या आहेत.",
+    es: "¡Bienvenido a mi portafolio! Creo sitios web y aplicaciones web de última generación que son rápidos, premium y diseñados para convertir.",
+    fr: "Bienvenue sur mon portfolio! Je crée des sites web et des applications web de nouvelle génération qui sont rapides, premium et conçus pour convertir."
+  },
+  about: {
+    en: "Here is a bit about me. I design and engineer modern web experiences end-to-end, focusing on performance, motion, and visual details.",
+    hi: "यहाँ मेरे बारे में कुछ जानकारी है। मैं परफॉर्मेंस, मोशन और विज़ुअल डिटेल्स पर ध्यान केंद्रित करते हुए शुरू से अंत तक आधुनिक वेब अनुभव डिज़ाइन करता हूँ।",
+    mr: "येथे माझ्याबद्दल काही माहिती आहे. मी कार्यक्षमता, मोशन आणि व्हिज्युअल डिटेल्सवर लक्ष केंद्रित करून सुरुवातीपासून शेवटपर्यंत आधुनिक वेब अनुभव डिझाइन करतो.",
+    es: "Aquí hay un poco sobre mí. Diseño y construyo experiencias web modernas de principio a fin, enfocándome en el rendimiento, el movimiento y los detalles visuales.",
+    fr: "Voici un peu d'histoire sur moi. Je conçois et développe des expériences web modernes de bout en bout, en me concentrant sur la performance, les animations et les détails visuels."
+  },
+  work: {
+    en: "Here is a selection of my work, including AI SaaS platforms, corporate portals, and luxury e-commerce brands shipped to real users.",
+    hi: "यहाँ मेरे काम का एक चयन है, जिसमें एआई सास प्लेटफॉर्म, कॉर्पोरेट पोर्टल और वास्तविक उपयोगकर्ताओं के लिए बनाए गए लक्जरी ई-कॉमर्स ब्रांड शामिल हैं।",
+    mr: "येथे माझ्या कामाची निवड आहे, ज्यामध्ये एआय सास प्लॅटफॉर्म, कॉर्पोरेट पोर्टल्स आणि वास्तविक वापरकर्त्यांसाठी तयार केलेले लक्झरी ई-कॉमर्स ब्रँड समाविष्ट आहेत.",
+    es: "Aquí hay una selección de mi trabajo, incluyendo plataformas SaaS de IA, portales corporativos y marcas de comercio electrónico de lujo.",
+    fr: "Voici une sélection de mes réalisations, comprenant des plateformes SaaS d'IA, des portails d'entreprise et des marques de e-commerce de luxe."
+  },
+  process: {
+    en: "My workflow is simple and collaborative: Discover, Design, Build, and Launch. We align on your business goals first.",
+    hi: "मेरा काम करने का तरीका सरल और सहयोगात्मक है: खोजें, डिज़ाइन करें, निर्माण करें और लॉन्च करें। हम सबसे पहले आपके व्यावसायिक लक्ष्यों पर ध्यान केंद्रित करते हैं।",
+    mr: "माझी काम करण्याची पद्धत सोपी आणि सहयोगात्मक आहे: शोध, डिझाइन, निर्मिती आणि लाँच. आम्ही प्रथम तुमच्या व्यावसायिक उद्दिष्टांवर लक्ष केंद्रित करतो.",
+    es: "Mi flujo de trabajo es simple y colaborativo: Descubrir, Diseñar, Construir y Lanzar. Primero nos alineamos con tus objetivos comerciales.",
+    fr: "Mon flux de travail est simple et collaboratif: Découverte, Conception, Développement et Lancement. Nous nous alignons d'abord sur vos objectifs."
+  },
+  services: {
+    en: "I offer end-to-end services: Web App Development, Landing Pages, Dashboards, and API automation to help grow your business.",
+    hi: "मैं शुरू से अंत तक सेवाएँ प्रदान करता हूँ: वेब ऐप डेवलपमेंट, लैंडिंग पेज, डैशबोर्ड और आपके बिज़नेस को बढ़ाने में मदद करने के लिए एपीआई ऑटोमेशन।",
+    mr: "मी सुरुवातीपासून शेवटपर्यंत सेवा देतो: वेब अ‍ॅप डेव्हलपमेंट, लँडिंग पेजेस, डॅशबोर्ड आणि तुमचा व्यवसाय वाढवण्यास मदत करण्यासाठी एपीआई ऑटोमेशन.",
+    es: "Ofrezco servicios de principio a fin: desarrollo de aplicaciones web, páginas de destino, paneles de control y automatización de API.",
+    fr: "Je propose des services complets: développement d'applications web, landing pages, tableaux de bord et automatisation d'API."
+  },
+  stack: {
+    en: "These are the modern tools I reach for every day, including React, Next.js, Node, PostgreSQL, and Framer Motion.",
+    hi: "ये वे आधुनिक टूल्स हैं जिनका मैं रोज़ाना उपयोग करता हूँ, जैसे कि React, Next.js, Node, PostgreSQL और Framer Motion।",
+    mr: "ही ती आधुनिक साधने आहेत जी मी दररोज वापरतो, जसे की React, Next.js, Node, PostgreSQL आणि Framer Motion.",
+    es: "Estas son las herramientas modernas que utilizo todos los días, incluyendo React, Next.js, Node, PostgreSQL y Framer Motion.",
+    fr: "Voici les outils modernes que j'utilise au quotidien, notamment React, Next.js, Node, PostgreSQL et Framer Motion."
+  },
+  testimonials: {
+    en: "Here are reviews from real clients I've worked with. I always focus on speed, communication, and business outcomes.",
+    hi: "यहाँ उन वास्तविक ग्राहकों की समीक्षाएं हैं जिनके साथ मैंने काम किया है। मैं हमेशा गति, संचार और व्यावसायिक परिणामों पर ध्यान केंद्रित करता हूँ।",
+    mr: "येथे मी ज्यांच्यासोबत काम केले आहे अशा वास्तविक ग्राहकांची पुनरावलोकने आहेत. मी नेहमी वेग, संवाद आणि व्यावसायिक परिणामांवर लक्ष केंद्रित करतो.",
+    es: "Aquí hay testimonios de clientes reales con los que he trabajado. Siempre me enfoco en la velocidad, la comunicación y los resultados.",
+    fr: "Voici les retours de clients réels avec lesquels j'ai travaillé. Je me concentre toujours sur la rapidité, la communication et les résultats."
+  },
+  contact: {
+    en: "Let's build something powerful together! Send me a message here or contact me directly on WhatsApp to get started.",
+    hi: "चलिए मिलकर कुछ शक्तिशाली बनाते हैं! शुरू करने के लिए मुझे यहाँ संदेश भेजें या सीधे WhatsApp पर संपर्क करें।",
+    mr: "चला मिळून काहीतरी शक्तिशाली बनवूया! सुरू करण्यासाठी मला येथे संदेश पाठवा किंवा थेट WhatsApp वर संपर्क करा.",
+    es: "¡Construyamos algo poderoso juntos! Envíame un mensaje aquí o contáctame directamente por WhatsApp para comenzar.",
+    fr: "Construisons quelque chose de puissant ensemble! Envoyez-moi un message ici ou contactez-moi directement sur WhatsApp."
+  }
 };
 
-const UI_STRINGS: Record<string, { title: string; langLabel: string; play: string; pause: string; toastErr: string }> = {
+const UI_STRINGS: Record<string, { title: string; langLabel: string; play: string; pause: string; toastErr: string; guideActive: string; guideInactive: string }> = {
   en: {
     title: "Jayesh's AI Assistant",
     langLabel: "Language",
-    play: "Listen to Intro",
-    pause: "Pause Intro",
-    toastErr: "Failed to generate AI voice introduction. Please try again."
+    play: "Enable Audio Guide",
+    pause: "Pause Audio Guide",
+    toastErr: "Failed to generate AI voice. Please try again.",
+    guideActive: "✨ AI Scroll Guide active — scroll down to explore!",
+    guideInactive: "🔊 Click below to enable AI Voice Guide"
   },
   hi: {
     title: "जयेश का एआई सहायक",
     langLabel: "भाषा",
-    play: "परिचय सुनें",
-    pause: "विराम दें",
-    toastErr: "एआई वॉयस परिचय उत्पन्न करने में विफल। कृपया पुन: प्रयास करें।"
+    play: "ऑडियो गाइड सक्षम करें",
+    pause: "ऑडियो गाइड रोकें",
+    toastErr: "एआई वॉयस उत्पन्न करने में विफल। कृपया पुन: प्रयास करें।",
+    guideActive: "✨ एआई स्क्रॉल गाइड सक्रिय है — एक्सप्लोर करने के लिए स्क्रॉल करें!",
+    guideInactive: "🔊 एआई वॉयस गाइड सक्षम करने के लिए नीचे क्लिक करें"
   },
   mr: {
     title: "जयेशचा एआई सहाय्यक",
     langLabel: "भाषा",
-    play: "परिचय ऐका",
-    pause: "थांबवा",
-    toastErr: "एआय व्हॉइस परिचय तयार करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा."
+    play: "ऑडिओ मार्गदर्शक सुरू करा",
+    pause: "ऑडिओ मार्गदर्शक थांबवा",
+    toastErr: "एआय व्हॉइस तयार करण्यात अयशस्वी. कृपया पुन्हा प्रयत्न करा.",
+    guideActive: "✨ एआय स्क्रॉल मार्गदर्शक सक्रिय आहे — एक्सप्लोर करण्यासाठी स्क्रॉल करा!",
+    guideInactive: "🔊 एआय व्हॉइस मार्गदर्शक सुरू करण्यासाठी खाली क्लिक करा"
   },
   es: {
     title: "Asistente de IA de Jayesh",
     langLabel: "Idioma",
-    play: "Escuchar Intro",
-    pause: "Pausar Intro",
-    toastErr: "Error al generar la introducción de voz de IA. Inténtalo de nuevo."
+    play: "Activar Guía de Voz",
+    pause: "Pausar Guía de Voz",
+    toastErr: "Error al generar la voz de IA. Inténtalo de nuevo.",
+    guideActive: "✨ Guía de IA activa — ¡desplázate para explorar!",
+    guideInactive: "🔊 Haz clic abajo para activar la guía de voz"
   },
   fr: {
     title: "Assistant IA de Jayesh",
     langLabel: "Langue",
-    play: "Écouter l'intro",
-    pause: "Pause",
-    toastErr: "Échec de la génération de l'introduction vocale IA. Veuillez réessayer."
-  },
-  de: {
-    title: "Jayeshs KI-Assistent",
-    langLabel: "Sprache",
-    play: "Intro anhören",
-    pause: "Pause",
-    toastErr: "Fehler beim Generieren der KI-Sprachvorstellung. Bitte versuchen Sie es erneut."
-  },
-  it: {
-    title: "Assistente IA di Jayesh",
-    langLabel: "Lingua",
-    play: "Ascolta l'intro",
-    pause: "Pausa",
-    toastErr: "Impossibile generare l'introduzione vocale AI. Riprova."
-  },
-  pt: {
-    title: "Assistente de IA do Jayesh",
-    langLabel: "Idioma",
-    play: "Ouvir Introdução",
-    pause: "Pausar",
-    toastErr: "Falha ao gerar a introdução de voz de IA. Tente novamente."
+    play: "Activer le guide audio",
+    pause: "Pauser le guide audio",
+    toastErr: "Échec de la génération vocale IA. Veuillez réessayer.",
+    guideActive: "✨ Guide IA actif — faites défiler pour explorer!",
+    guideInactive: "🔊 Cliquez ci-dessous pour activer le guide vocal"
   }
 };
 
-const getScript = (lang: string) => SCRIPTS[lang] || SCRIPTS.en;
+const getScript = (section: string, lang: string) => {
+  const sect = SECTION_SCRIPTS[section] || SECTION_SCRIPTS.top;
+  return sect[lang] || sect.en;
+};
+
 const getUIStrings = (lang: string) => UI_STRINGS[lang] || UI_STRINGS.en;
 
 export const VoiceAvatar = () => {
@@ -84,6 +125,8 @@ export const VoiceAvatar = () => {
   const [showTooltip, setShowTooltip] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isGuideEnabled, setIsGuideEnabled] = useState(false);
+  const [activeSection, setActiveSection] = useState("top");
   const [cachedAudios, setCachedAudios] = useState<Record<string, string>>({});
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -91,16 +134,51 @@ export const VoiceAvatar = () => {
   const analyserRef = useRef<AnalyserNode | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const animationFrameId = useRef<number | null>(null);
+  const requestIdRef = useRef(0);
+
+  // Intersection Observer to track scroll position
+  useEffect(() => {
+    const sectionIds = ["top", "about", "work", "process", "services", "stack", "testimonials", "contact"];
+    const observers = sectionIds.map((id) => {
+      const el = document.getElementById(id);
+      if (!el) return null;
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            setActiveSection(id);
+          }
+        },
+        { threshold: 0.25, rootMargin: "-10% 0px -40% 0px" } // Trigger in the upper-middle section of viewport
+      );
+
+      observer.observe(el);
+      return { observer, el };
+    });
+
+    return () => {
+      observers.forEach((obs) => {
+        if (obs) obs.observer.unobserve(obs.el);
+      });
+    };
+  }, []);
 
   // Show greeting tooltip after load
   useEffect(() => {
     const t = setTimeout(() => {
-      if (!open && !isPlaying) setShowTooltip(true);
+      if (!open && !isGuideEnabled) setShowTooltip(true);
     }, 4000);
     return () => clearTimeout(t);
-  }, [open, isPlaying]);
+  }, [open, isGuideEnabled]);
 
-  // Handle visualizer loop
+  // Handle active section change when guide mode is enabled
+  useEffect(() => {
+    if (isGuideEnabled && activeSection) {
+      playSectionAudio(activeSection);
+    }
+  }, [activeSection, isGuideEnabled, lang]);
+
+  // Handle visualizer animation loop
   useEffect(() => {
     if (isPlaying && canvasRef.current && analyserRef.current) {
       const canvas = canvasRef.current;
@@ -117,7 +195,6 @@ export const VoiceAvatar = () => {
 
         analyser.getByteFrequencyData(dataArray);
         
-        // Match high-DPI displays
         const width = canvas.width;
         const height = canvas.height;
         ctx.clearRect(0, 0, width, height);
@@ -143,7 +220,7 @@ export const VoiceAvatar = () => {
         ctx.arc(cx, cy, baseRadius + 8 + pulse * 1.5, 0, Math.PI * 2);
         ctx.stroke();
 
-        // Draw frequency bars
+        // Draw frequency waves
         const numBars = 72;
         const grad = ctx.createRadialGradient(cx, cy, baseRadius, cx, cy, baseRadius + 18);
         grad.addColorStop(0, "rgba(6, 182, 212, 0.9)"); // cyan
@@ -180,7 +257,6 @@ export const VoiceAvatar = () => {
       if (animationFrameId.current) {
         cancelAnimationFrame(animationFrameId.current);
       }
-      // Clear canvas
       if (canvasRef.current) {
         const canvas = canvasRef.current;
         const ctx = canvas.getContext("2d");
@@ -205,21 +281,24 @@ export const VoiceAvatar = () => {
     };
   }, []);
 
-  const handlePlayVoice = async () => {
-    if (isPlaying) {
-      audioRef.current?.pause();
-      setIsPlaying(false);
-      return;
+  const playSectionAudio = async (sectionId: string) => {
+    const currentRequestId = ++requestIdRef.current;
+
+    // Pause any playing audio
+    if (audioRef.current) {
+      audioRef.current.pause();
     }
 
     setIsLoading(true);
-    let audioUrl = cachedAudios[lang];
+    setIsPlaying(false);
+
+    const cacheKey = `${sectionId}_${lang}`;
+    let audioUrl = cachedAudios[cacheKey];
     const ui = getUIStrings(lang);
 
     try {
       if (!audioUrl) {
-        const scriptText = getScript(lang);
-        // Request audio from our serverless Vercel function to avoid CORS issues and secure the key
+        const scriptText = getScript(sectionId, lang);
         const response = await fetch("/api/tts", {
           method: "POST",
           headers: {
@@ -231,13 +310,17 @@ export const VoiceAvatar = () => {
         });
 
         if (!response.ok) {
-          throw new Error(`TTS serverless function returned status: ${response.status}`);
+          throw new Error(`TTS serverless function failed: ${response.status}`);
         }
 
         const blob = await response.blob();
+        if (currentRequestId !== requestIdRef.current) return; // Scrolled away
+
         audioUrl = URL.createObjectURL(blob);
-        setCachedAudios((prev) => ({ ...prev, [lang]: audioUrl }));
+        setCachedAudios((prev) => ({ ...prev, [cacheKey]: audioUrl }));
       }
+
+      if (currentRequestId !== requestIdRef.current) return; // Scrolled away
 
       if (!audioRef.current) {
         audioRef.current = new Audio();
@@ -265,6 +348,11 @@ export const VoiceAvatar = () => {
       }
 
       await audioRef.current.play();
+      if (currentRequestId !== requestIdRef.current) {
+        audioRef.current.pause(); // Scrolled away during play start
+        return;
+      }
+
       setIsPlaying(true);
       setIsLoading(false);
 
@@ -273,8 +361,20 @@ export const VoiceAvatar = () => {
       };
     } catch (err) {
       console.error(err);
-      toast.error(ui.toastErr);
-      setIsLoading(false);
+      if (currentRequestId === requestIdRef.current) {
+        toast.error(ui.toastErr);
+        setIsLoading(false);
+      }
+    }
+  };
+
+  const handleToggleGuide = () => {
+    if (isGuideEnabled) {
+      audioRef.current?.pause();
+      setIsPlaying(false);
+      setIsGuideEnabled(false);
+    } else {
+      setIsGuideEnabled(true);
     }
   };
 
@@ -283,7 +383,7 @@ export const VoiceAvatar = () => {
     setShowTooltip(false);
   };
 
-  const script = getScript(lang);
+  const script = getScript(activeSection, lang);
   const ui = getUIStrings(lang);
 
   return (
@@ -313,29 +413,43 @@ export const VoiceAvatar = () => {
 
             {/* Subtitle / Script Box */}
             <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-4 max-h-[140px] overflow-y-auto text-xs sm:text-sm leading-relaxed text-foreground/80 scrollbar-thin">
-              <div className="flex items-center gap-1.5 mb-2 text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">
-                <Languages className="w-3.5 h-3.5 text-neon-purple" />
-                <span>{ui.langLabel}: {lang.toUpperCase()}</span>
+              <div className="flex items-center justify-between gap-1.5 mb-2 text-[10px] text-muted-foreground uppercase tracking-widest font-semibold">
+                <span className="flex items-center gap-1">
+                  <Languages className="w-3.5 h-3.5 text-neon-purple" />
+                  {ui.langLabel}: {lang.toUpperCase()}
+                </span>
+                <span className="text-neon-cyan border border-neon-cyan/20 px-1.5 py-0.5 rounded-md">
+                  Section: {activeSection}
+                </span>
               </div>
               <p className={isPlaying ? "text-foreground transition-colors" : "text-muted-foreground"}>
                 {script}
               </p>
             </div>
 
+            {/* Status Guide Text */}
+            <div className="text-[11px] text-center italic transition-colors">
+              {isGuideEnabled ? (
+                <span className="text-neon-cyan animate-pulse">{ui.guideActive}</span>
+              ) : (
+                <span className="text-muted-foreground">{ui.guideInactive}</span>
+              )}
+            </div>
+
             {/* Player Controls */}
             <div className="flex items-center gap-3">
               <button
-                onClick={handlePlayVoice}
+                onClick={handleToggleGuide}
                 disabled={isLoading}
                 className={`flex-1 flex items-center justify-center gap-2 rounded-xl py-3 font-semibold text-sm transition-transform active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none ${
-                  isPlaying
+                  isGuideEnabled
                     ? "bg-white/15 border border-white/10 hover:bg-white/20 text-white"
                     : "bg-gradient-primary text-primary-foreground glow-primary hover:opacity-90"
                 }`}
               >
                 {isLoading ? (
                   <div className="w-4 h-4 rounded-full border-2 border-current border-t-transparent animate-spin" />
-                ) : isPlaying ? (
+                ) : isGuideEnabled ? (
                   <>
                     <Pause className="w-4 h-4 fill-current" />
                     <span>{ui.pause}</span>
@@ -366,7 +480,7 @@ export const VoiceAvatar = () => {
               <span>👋 Hi, I'm Jayesh!</span>
             </div>
             <p className="text-muted-foreground">
-              Click here to hear my voice introduction in your selected language!
+              Click here to enable my AI Audio Guide. It will introduce sections as you scroll!
             </p>
             <div className="absolute right-6 -bottom-1.5 w-3 h-3 bg-card border-r border-b border-white/10 transform rotate-45" />
           </motion.div>
@@ -388,7 +502,7 @@ export const VoiceAvatar = () => {
         />
 
         {/* Visual Pulse for Idle/Unplayed State */}
-        {!isPlaying && (
+        {!isGuideEnabled && (
           <span className="absolute -inset-1 rounded-full bg-gradient-primary opacity-20 blur-sm animate-pulse-slow group-hover:scale-105 transition-transform" />
         )}
 

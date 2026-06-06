@@ -26,7 +26,7 @@ const TESTIMONIALS = [
 ];
 
 export const Testimonials = () => (
-  <section className="relative py-20 sm:py-28">
+  <section id="testimonials" className="relative py-20 sm:py-28">
     <div className="container mx-auto px-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
