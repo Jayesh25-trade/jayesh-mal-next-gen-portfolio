@@ -10,7 +10,8 @@ export const LanguageModal = () => {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    if (!hasChosenLanguage()) setOpen(true);
+    // Disabled auto-open on mount to prevent blocking first-time visitors.
+    // Language can still be selected via the globe icon in the navigation bar.
   }, []);
 
   useEffect(() => { setSelected(lang); }, [lang]);

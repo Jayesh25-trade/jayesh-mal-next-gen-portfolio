@@ -11,7 +11,14 @@ export function I18nProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY) as LangCode | null;
-    if (stored && DICTS[stored]) setLangState(stored);
+    if (stored && DICTS[stored]) {
+      setLangState(stored);
+    } else {
+      const navLang = navigator.language.split("-")[0] as LangCode;
+      if (navLang && DICTS[navLang]) {
+        setLangState(navLang);
+      }
+    }
   }, []);
 
   const isRTL = !!LANGUAGES.find((l) => l.code === lang)?.rtl;

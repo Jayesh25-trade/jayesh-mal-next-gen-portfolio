@@ -89,8 +89,8 @@ export const Hero = () => {
               className="mt-8 flex items-center justify-center lg:justify-start gap-3"
             >
               {[
-                { Icon: Github, href: "https://github.com/" },
-                { Icon: Linkedin, href: "https://linkedin.com/" },
+                { Icon: Github, href: "https://github.com/Jayesh25-trade" },
+                { Icon: Linkedin, href: "https://linkedin.com/in/jayesh-mal" },
                 { Icon: Mail, href: "mailto:jimmy.developers007@gmail.com" },
               ].map(({ Icon, href }, i) => (
                 <a key={i} href={href} target="_blank" rel="noopener noreferrer"
