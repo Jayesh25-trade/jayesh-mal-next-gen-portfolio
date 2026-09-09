@@ -25,40 +25,48 @@ const FAQS = [
 ];
 
 export const FAQ = () => (
-  <section className="relative py-20 sm:py-28">
-    <div className="container mx-auto px-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        className="max-w-2xl mx-auto text-center mb-10 sm:mb-14"
-      >
-        <h2 className="text-3xl sm:text-5xl font-display font-semibold">
-          <span className="gradient-text">Frequently asked</span>
-        </h2>
-        <p className="mt-3 text-muted-foreground">Everything you need to know before we start.</p>
-      </motion.div>
+  <section id="faq" className="relative py-28 sm:py-36">
+    <div className="section-padding container mx-auto">
+      {/* Header Tagline */}
+      <div className="flex items-center gap-4 mb-16">
+        <span className="label-sm text-acid">07 — INQUIRIES</span>
+        <div className="rule flex-1" />
+      </div>
 
-      <motion.div
-        initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-50px" }}
-        className="max-w-3xl mx-auto"
-      >
-        <Accordion type="single" collapsible className="space-y-3">
-          {FAQS.map((f, i) => (
-            <AccordionItem
-              key={i} value={`item-${i}`}
-              className="gradient-border px-5 sm:px-6 border-0 rounded-2xl overflow-hidden"
-            >
-              <AccordionTrigger className="text-left font-display text-base sm:text-lg hover:no-underline py-5">
-                {f.q}
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground leading-relaxed pb-5">
-                {f.a}
-              </AccordionContent>
-            </AccordionItem>
-          ))}
-        </Accordion>
-      </motion.div>
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        {/* Left Column: Big Headline */}
+        <div className="lg:col-span-5">
+          <h2 className="font-display font-black text-text uppercase tracking-tighter sticky top-28" style={{ fontSize: "clamp(36px, 5vw, 64px)" }}>
+            Frequently<br />Asked Questions
+          </h2>
+          <p className="mt-4 text-muted text-sm max-w-sm">
+            Everything you need to know before we start working together.
+          </p>
+        </div>
+
+        {/* Right Column: Editorial Accordion List */}
+        <div className="lg:col-span-7">
+          <Accordion type="single" collapsible className="space-y-4">
+            {FAQS.map((f, i) => (
+              <AccordionItem
+                key={i}
+                value={`item-${i}`}
+                className="border-b border-wire/20 pb-4 border-t-0 border-x-0 rounded-none group transition-colors"
+              >
+                <AccordionTrigger className="text-left font-display font-bold text-lg sm:text-xl text-text hover:text-acid hover:no-underline py-4 flex items-center justify-between gap-4">
+                  <span className="flex items-center gap-4">
+                    <span className="text-xs font-mono text-acid opacity-70">0{i + 1}</span>
+                    {f.q}
+                  </span>
+                </AccordionTrigger>
+                <AccordionContent className="text-muted leading-relaxed pb-4 pt-2 text-sm sm:text-base font-normal max-w-xl pl-8">
+                  {f.a}
+                </AccordionContent>
+              </AccordionItem>
+            ))}
+          </Accordion>
+        </div>
+      </div>
     </div>
   </section>
 );

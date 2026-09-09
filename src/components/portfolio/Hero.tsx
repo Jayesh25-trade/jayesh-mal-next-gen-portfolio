@@ -1,149 +1,228 @@
-import { motion, useMotionValue, useSpring } from "framer-motion";
-import { ArrowRight, Sparkles, Github, Linkedin, Mail } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
+import { ArrowDownRight } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
-import portrait from "@/assets/jayesh-portrait.jpg";
 
-const word = {
-  hidden: { opacity: 0, y: 24, filter: "blur(8px)" },
-  visible: (i: number) => ({
-    opacity: 1, y: 0, filter: "blur(0px)",
-    transition: { delay: i * 0.06, duration: 0.7, ease: "easeOut" as const },
-  }),
+/* Custom minimal cursor that follows mouse */
+const EditorialCursor = () => {
+  const cursorRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const move = (e: MouseEvent) => {
+      if (cursorRef.current) {
+        cursorRef.current.style.transform = `translate(${e.clientX - 8}px, ${e.clientY - 8}px)`;
+      }
+    };
+    window.addEventListener("mousemove", move);
+    return () => window.removeEventListener("mousemove", move);
+  }, []);
+  return (
+    <div
+      ref={cursorRef}
+      className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-[9999] hidden lg:block"
+      style={{ background: "var(--acid)", mixBlendMode: "difference", transition: "transform 0.08s linear" }}
+    />
+  );
 };
+
+/* Clip-path curtain reveal per word */
+const CurtainWord = ({ word, delay = 0 }: { word: string; delay?: number }) => (
+  <span className="inline-block overflow-hidden leading-none">
+    <motion.span
+      className="inline-block"
+      initial={{ y: "110%" }}
+      animate={{ y: "0%" }}
+      transition={{ delay, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
+    >
+      {word}
+    </motion.span>
+  </span>
+);
 
 export const Hero = () => {
   const { t } = useI18n();
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  const x = useSpring(mouseX, { stiffness: 60, damping: 20 });
-  const y = useSpring(mouseY, { stiffness: 60, damping: 20 });
+  const containerRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
 
-  useEffect(() => {
-    const onMove = (e: MouseEvent) => { mouseX.set(e.clientX); mouseY.set(e.clientY); };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, [mouseX, mouseY]);
+  const portraitY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
+  const textY     = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
+  const opacity   = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
 
-  const title = `${t.hero.title1} ${t.hero.title2}`.split(" ");
+  const words1 = t.hero.title1.split(" ");
+  const words2 = t.hero.title2.split(" ");
+  const allWords = [...words1, ...words2];
 
   return (
-    <section id="top" className="relative min-h-[100svh] flex items-center pt-28 sm:pt-32 pb-16 overflow-hidden">
-      <motion.div
-        aria-hidden
-        style={{ x, y, translateX: "-50%", translateY: "-50%" }}
-        className="pointer-events-none fixed top-0 left-0 w-[420px] h-[420px] rounded-full bg-neon-purple/15 blur-3xl z-0 hidden lg:block"
-      />
+    <>
+      <EditorialCursor />
+      <section
+        ref={containerRef}
+        id="top"
+        className="relative grain overflow-hidden"
+        style={{ background: "var(--ink)", minHeight: "100svh" }}
+      >
+        {/* ─── Accent line top-left ─── */}
+        <motion.div
+          initial={{ scaleX: 0 }}
+          animate={{ scaleX: 1 }}
+          transition={{ delay: 1.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+          className="absolute top-0 left-0 h-[1px] w-[40%] origin-left"
+          style={{ background: "var(--acid)", opacity: 0.7 }}
+        />
 
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-[1.2fr_1fr] gap-10 lg:gap-16 items-center">
-          {/* LEFT — copy */}
-          <div className="text-center lg:text-left order-2 lg:order-1">
+        <div className="container-xl relative z-10 pt-32 pb-20 sm:pb-16">
+          {/* ─── Availability badge — top left ─── */}
+          <motion.div
+            initial={{ opacity: 0, x: -16 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.2, duration: 0.6 }}
+            className="flex items-center gap-2 mb-10 sm:mb-14"
+          >
+            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--acid)" }} />
+            <span className="label-sm">{t.hero.badge}</span>
+          </motion.div>
+
+          {/* ─── HERO LAYOUT: text left + portrait right ─── */}
+          <div className="flex flex-col lg:flex-row lg:items-end gap-0">
+
+            {/* LEFT: Massive headline (10vw) — left-aligned, breaks grid right edge */}
             <motion.div
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 glass rounded-full px-3 py-1.5 text-xs sm:text-sm mb-6"
+              style={{ y: textY, opacity }}
+              className="relative flex-1 lg:max-w-none"
             >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-cyan opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-cyan" />
-              </span>
-              <Sparkles className="w-3.5 h-3.5 text-neon-cyan" />
-              <span className="text-muted-foreground">{t.hero.badge}</span>
-            </motion.div>
+              <h1
+                className="font-display font-black tracking-tighter leading-none text-cream"
+                style={{ fontSize: "var(--h-hero)" }}
+              >
+                {/* Line 1 */}
+                <span className="block">
+                  {words1.map((word, i) => (
+                    <CurtainWord key={i} word={word} delay={0.3 + i * 0.06} />
+                  ))}
+                  {" "}
+                </span>
+                {/* Line 2 — accent colored */}
+                <span className="block" style={{ color: "var(--acid)" }}>
+                  {words2.map((word, i) => (
+                    <CurtainWord
+                      key={i}
+                      word={word}
+                      delay={0.3 + words1.length * 0.06 + i * 0.06}
+                    />
+                  ))}
+                </span>
+              </h1>
 
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-display font-semibold leading-[1.05] tracking-tight">
-              {title.map((w, i) => (
-                <motion.span
-                  key={i} custom={i} variants={word} initial="hidden" animate="visible"
-                  className={`inline-block mr-[0.25em] ${i >= t.hero.title1.split(" ").length ? "gradient-text" : ""}`}
+              {/* ─── Descriptor strip below headline ─── */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 1.2, duration: 0.8 }}
+                className="mt-8 sm:mt-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6 sm:gap-10 max-w-[720px]"
+              >
+                <p
+                  className="text-base sm:text-lg leading-relaxed max-w-[380px]"
+                  style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}
                 >
-                  {w}
-                </motion.span>
-              ))}
-            </h1>
+                  {t.hero.subtitle}
+                </p>
 
-            <motion.p
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.6 }}
-              className="mt-6 text-base sm:text-lg text-muted-foreground max-w-xl mx-auto lg:mx-0"
-            >
-              {t.hero.subtitle}
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8, duration: 0.6 }}
-              className="mt-8 flex flex-col sm:flex-row items-center lg:justify-start justify-center gap-3"
-            >
-              <a href="#work"
-                className="group inline-flex items-center gap-2 rounded-full bg-gradient-primary px-6 py-3.5 font-medium text-primary-foreground glow-primary hover:scale-[1.03] transition-transform w-full sm:w-auto justify-center">
-                {t.hero.ctaWork}
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </a>
-              <a href="#contact"
-                className="inline-flex items-center gap-2 rounded-full glass px-6 py-3.5 font-medium hover:border-white/25 transition-colors w-full sm:w-auto justify-center">
-                {t.hero.ctaContact}
-              </a>
+                {/* CTA — placed right of subtitle, not centered below headline */}
+                <div className="flex items-center gap-3 shrink-0">
+                  <a href="#work" className="btn-primary">
+                    {t.hero.ctaWork}
+                    <ArrowDownRight className="w-4 h-4" />
+                  </a>
+                  <a href="#contact" className="btn-ghost">{t.hero.ctaContact}</a>
+                </div>
+              </motion.div>
             </motion.div>
 
+            {/* RIGHT: Portrait — tall, crops on left edge, parallaxes up */}
             <motion.div
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.0, duration: 0.6 }}
-              className="mt-8 flex items-center justify-center lg:justify-start gap-3"
+              initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
+              animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
+              transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+              style={{ y: portraitY }}
+              className="relative lg:absolute lg:right-0 lg:bottom-0 lg:w-[38%] xl:w-[34%] h-[360px] sm:h-[480px] lg:h-[90vh] mt-10 lg:mt-0"
+              data-cursor-view
             >
-              {[
-                { Icon: Github, href: "https://github.com/Jayesh25-trade" },
-                { Icon: Linkedin, href: "https://linkedin.com/in/jayesh-mal" },
-                { Icon: Mail, href: "mailto:jimmy.developers007@gmail.com" },
-              ].map(({ Icon, href }, i) => (
-                <a key={i} href={href} target="_blank" rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-full glass flex items-center justify-center hover:border-neon-cyan/40 hover:text-neon-cyan transition-colors">
-                  <Icon className="w-4 h-4" />
-                </a>
-              ))}
+              {/* Duotone-treated portrait */}
+              <div className="relative w-full h-full overflow-hidden">
+                <img
+                  src="/jayesh-portrait.jpg"
+                  alt="Jayesh Mal — founder of Jimmzzz Developers"
+                  className="w-full h-full object-cover object-top"
+                  style={{ filter: "grayscale(20%) contrast(1.05)" }}
+                />
+                {/* Bottom gradient fade into background */}
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    background: "linear-gradient(to top, var(--ink) 0%, transparent 40%)",
+                  }}
+                />
+                {/* Left edge fade */}
+                <div
+                  className="absolute inset-0 hidden lg:block"
+                  style={{
+                    background: "linear-gradient(to right, var(--ink) 0%, transparent 30%)",
+                  }}
+                />
+              </div>
+
+              {/* Floating meta tags on portrait */}
+              <motion.div
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 1.4, duration: 0.6 }}
+                className="absolute bottom-16 left-4 sm:left-6 tag"
+                style={{ background: "var(--ink-2)", borderColor: "var(--wire-2)", color: "var(--text)" }}
+              >
+                <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--acid)" }} />
+                Available now
+              </motion.div>
             </motion.div>
           </div>
-
-          {/* RIGHT — portrait */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 30 }} animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.4, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
-            className="relative mx-auto order-1 lg:order-2 w-[260px] sm:w-[320px] lg:w-[420px]"
-          >
-            <div className="absolute -inset-6 bg-gradient-primary opacity-40 blur-3xl rounded-full" />
-            <div className="absolute -inset-2 rounded-[2rem] bg-gradient-to-br from-neon-cyan/40 via-neon-purple/40 to-neon-pink/40 blur-xl" />
-            <div className="relative gradient-border rounded-[2rem] overflow-hidden aspect-square">
-              <img
-                src={portrait}
-                alt="Portrait of Jayesh Mal, founder of Jimmzzz Developers"
-                width={1024} height={1024}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-background/60 via-transparent to-transparent" />
-            </div>
-
-            {/* Floating stat chips */}
-            <motion.div
-              animate={{ y: [0, -10, 0] }} transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-              className="absolute -left-4 sm:-left-10 top-10 glass-strong rounded-2xl px-3 py-2 text-xs"
-            >
-              <div className="text-neon-cyan font-display text-lg leading-none">3+</div>
-              <div className="text-muted-foreground text-[10px] uppercase tracking-wider mt-0.5">Years</div>
-            </motion.div>
-            <motion.div
-              animate={{ y: [0, 10, 0] }} transition={{ repeat: Infinity, duration: 6, ease: "easeInOut", delay: 1 }}
-              className="absolute -right-4 sm:-right-8 top-1/3 glass-strong rounded-2xl px-3 py-2 text-xs"
-            >
-              <div className="gradient-text font-display text-lg leading-none">20+</div>
-              <div className="text-muted-foreground text-[10px] uppercase tracking-wider mt-0.5">Projects</div>
-            </motion.div>
-            <motion.div
-              animate={{ y: [0, -8, 0] }} transition={{ repeat: Infinity, duration: 7, ease: "easeInOut", delay: 2 }}
-              className="absolute -right-2 sm:right-4 -bottom-4 glass-strong rounded-2xl px-3 py-2 text-xs flex items-center gap-2"
-            >
-              <div className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse" />
-              <span>Available now</span>
-            </motion.div>
-          </motion.div>
         </div>
-      </div>
-    </section>
+
+        {/* ─── Bottom strip: stats preview ─── */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.5, duration: 0.8 }}
+          className="container-xl pb-8 lg:pb-10"
+          style={{ borderTop: "1px solid var(--wire)" }}
+        >
+          <div className="flex items-center gap-8 sm:gap-14 pt-6 overflow-x-auto">
+            {[
+              { n: "20+", l: "Projects shipped" },
+              { n: "15+", l: "Happy clients" },
+              { n: "3+", l: "Years" },
+              { n: "99%", l: "Client retention" },
+            ].map(({ n, l }) => (
+              <div key={l} className="shrink-0">
+                <span className="font-display font-black text-2xl sm:text-3xl" style={{ color: "var(--acid)" }}>{n}</span>
+                <span className="ml-2 text-xs sm:text-sm" style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}>{l}</span>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Scroll indicator */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 2, duration: 1 }}
+          className="absolute bottom-6 right-6 sm:right-10 flex flex-col items-end gap-1"
+        >
+          <span className="label-sm">Scroll</span>
+          <motion.div
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
+            className="w-[1px] h-8 self-center"
+            style={{ background: "var(--wire-2)" }}
+          />
+        </motion.div>
+      </section>
+    </>
   );
 };
