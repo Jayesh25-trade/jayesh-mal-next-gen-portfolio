@@ -84,7 +84,7 @@ export const Scene = () => {
     };
   }, []);
 
-  if (!webglSupported || mobile) return null;
+  if (!webglSupported) return null;
 
   return (
     <WebGLErrorBoundary>
@@ -96,17 +96,17 @@ export const Scene = () => {
         <Canvas
           camera={{ position: [0, 0, 8], fov: 60 }}
           gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
-          dpr={mobile ? [1, 1] : [1, 1.5]}
+          dpr={mobile ? 1 : [1, 1.5]}
           style={{ background: "transparent" }}
         >
           <Suspense fallback={null}>
             <CameraRig scrollProgress={scrollProgress} />
-            <LiquidMesh scrollProgress={scrollProgress} mousePos={mousePos} />
-            <ParticleField scrollProgress={scrollProgress} count={mobile ? 400 : 1600} />
+            <LiquidMesh scrollProgress={scrollProgress} mousePos={mousePos} mobile={mobile} />
+            <ParticleField scrollProgress={scrollProgress} count={mobile ? 300 : 1200} />
             <FloatingGrid scrollProgress={scrollProgress} />
-            <ambientLight intensity={0.3} />
-            <pointLight position={[5, 5, 5]} intensity={0.5} color="#00e5ff" />
-            <pointLight position={[-5, -3, 3]} intensity={0.4} color="#a855f7" />
+            <ambientLight intensity={0.4} />
+            <pointLight position={[5, 5, 5]} intensity={0.6} color="#00e5ff" />
+            <pointLight position={[-5, -3, 3]} intensity={0.5} color="#a855f7" />
           </Suspense>
         </Canvas>
       </div>

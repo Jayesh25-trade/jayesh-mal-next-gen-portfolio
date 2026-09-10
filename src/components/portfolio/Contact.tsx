@@ -66,7 +66,7 @@ export const Contact = () => {
   };
 
   return (
-    <section id="contact" className="relative py-28 sm:py-36 bg-ink text-text">
+    <section id="contact" className="relative py-28 sm:py-36 grain aurora-bg text-text" style={{ background: "rgba(12, 12, 12, 0.6)" }}>
       <div className="section-padding container mx-auto">
         {/* Header Tagline */}
         <div className="flex items-center gap-4 mb-16">

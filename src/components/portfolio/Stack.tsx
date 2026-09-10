@@ -45,8 +45,8 @@ export const Stack = () => {
   return (
     <section
       id="stack"
-      className="grain overflow-hidden"
-      style={{ background: "var(--ink)", paddingBlock: "var(--section-py)" }}
+      className="relative grain aurora-bg overflow-hidden"
+      style={{ background: "rgba(12, 12, 12, 0.55)", paddingBlock: "var(--section-py)" }}
     >
       <div className="container-xl mb-12 sm:mb-16">
         <div className="flex items-end gap-6">

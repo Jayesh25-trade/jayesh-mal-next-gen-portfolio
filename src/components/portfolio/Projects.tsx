@@ -242,9 +242,9 @@ export const Projects = () => {
   return (
     <section
       ref={sectionRef}
-      id="work"
-      className="grain aurora-bg"
-      style={{ background: "var(--ink)", paddingBlock: "var(--section-py)" }}
+      id="archive"
+      className="relative grain aurora-bg overflow-hidden"
+      style={{ background: "rgba(12, 12, 12, 0.55)", paddingBlock: "var(--section-py)" }}
     >
       <div className="container-xl">
         <motion.div

@@ -5,9 +5,10 @@ import * as THREE from "three";
 interface LiquidMeshProps {
   scrollProgress: { current: number };
   mousePos: { current: [number, number] };
+  mobile?: boolean;
 }
 
-export const LiquidMesh = ({ scrollProgress, mousePos }: LiquidMeshProps) => {
+export const LiquidMesh = ({ scrollProgress, mousePos, mobile = false }: LiquidMeshProps) => {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.ShaderMaterial>(null);
   const { viewport } = useThree();
@@ -35,12 +36,12 @@ export const LiquidMesh = ({ scrollProgress, mousePos }: LiquidMeshProps) => {
       float wave = sin(dist * 3.0 - uTime * 2.5) * exp(-dist * 0.4);
 
       // Ripple displacement
-      pos.z += wave * 0.6;
-      pos.z += sin(pos.x * 2.0 + uTime * 0.8) * 0.15;
-      pos.z += cos(pos.y * 2.0 + uTime * 0.6) * 0.15;
+      pos.z += wave * 0.8;
+      pos.z += sin(pos.x * 1.8 + uTime * 1.0) * 0.25;
+      pos.z += cos(pos.y * 1.8 + uTime * 0.8) * 0.25;
 
       // Scroll wave displacement
-      pos.z += sin(pos.y * 3.0 + uScroll * 10.0) * 0.25;
+      pos.z += sin(pos.y * 2.5 + uScroll * 8.0) * 0.35;
 
       vPosition = pos;
       gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
@@ -55,29 +56,29 @@ export const LiquidMesh = ({ scrollProgress, mousePos }: LiquidMeshProps) => {
     uniform vec2 uMouse;
 
     void main() {
-      // Base iridescent gradient: Cyan -> Purple -> Acid Green -> Pink
-      vec3 colorCyan = vec3(0.0, 0.9, 1.0);
-      vec3 colorPurple = vec3(0.66, 0.33, 0.98);
-      vec3 colorAcid = vec3(0.87, 1.0, 0.0);
-      vec3 colorPink = vec3(0.95, 0.2, 0.65);
+      // Iridescent vibrant palette: Cyan -> Magenta -> Acid Green -> Neon Purple
+      vec3 colorCyan   = vec3(0.0, 0.95, 1.0);
+      vec3 colorPurple = vec3(0.70, 0.25, 1.0);
+      vec3 colorAcid   = vec3(0.85, 1.0, 0.0);
+      vec3 colorPink   = vec3(1.0, 0.2, 0.6);
 
-      float t = vPosition.z * 1.2 + sin(uTime * 0.5) * 0.5 + uScroll * 0.8;
+      float t = vPosition.z * 1.5 + sin(uTime * 0.6) * 0.5 + uScroll * 1.0;
       
       vec3 color = mix(colorCyan, colorPurple, clamp(t + 0.5, 0.0, 1.0));
-      color = mix(color, colorAcid, clamp(sin(t * 2.0 + uTime * 0.3) * 0.5 + 0.5, 0.0, 1.0));
-      color = mix(color, colorPink, clamp(cos(t * 1.5) * 0.3 + 0.3, 0.0, 1.0));
+      color = mix(color, colorAcid, clamp(sin(t * 2.2 + uTime * 0.4) * 0.5 + 0.5, 0.0, 1.0));
+      color = mix(color, colorPink, clamp(cos(t * 1.8) * 0.4 + 0.4, 0.0, 1.0));
 
       // Cursor light specular highlight
       float cursorDist = distance(vUv, (uMouse + 1.0) * 0.5);
-      float cursorGlow = exp(-cursorDist * 4.0) * 0.8;
-      color += vec3(cursorGlow);
+      float cursorGlow = exp(-cursorDist * 3.5) * 1.0;
+      color += vec3(cursorGlow * 0.6);
 
-      // Liquid crystal grid wireframe outline
-      float gridX = abs(sin(vUv.x * 60.0));
-      float gridY = abs(sin(vUv.y * 60.0));
-      float grid = smoothstep(0.96, 1.0, max(gridX, gridY)) * 0.15;
+      // Liquid crystal grid wireframe outline (more prominent wavy mesh)
+      float gridX = abs(sin(vUv.x * 48.0));
+      float gridY = abs(sin(vUv.y * 48.0));
+      float gridLine = smoothstep(0.92, 1.0, max(gridX, gridY)) * 0.45;
 
-      float alpha = clamp(0.22 + abs(vPosition.z) * 0.2 + grid + cursorGlow * 0.35, 0.08, 0.65);
+      float alpha = clamp(0.35 + abs(vPosition.z) * 0.25 + gridLine + cursorGlow * 0.4, 0.15, 0.85);
 
       gl_FragColor = vec4(color, alpha);
     }
@@ -92,8 +93,8 @@ export const LiquidMesh = ({ scrollProgress, mousePos }: LiquidMeshProps) => {
   });
 
   return (
-    <mesh ref={meshRef} position={[0, 0, -2]}>
-      <planeGeometry args={[20, 14, 64, 64]} />
+    <mesh ref={meshRef} position={[0, 0, -1.2]}>
+      <planeGeometry args={[26, 18, mobile ? 32 : 64, mobile ? 32 : 64]} />
       <shaderMaterial
         ref={materialRef}
         vertexShader={vertexShader}

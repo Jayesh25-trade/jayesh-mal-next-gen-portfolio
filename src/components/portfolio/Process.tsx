@@ -101,7 +101,7 @@ export const Process = () => {
       ref={sectionRef}
       id="process"
       className="grain aurora-bg relative overflow-hidden"
-      style={{ background: "var(--ink-2)" }}
+      style={{ background: "rgba(22, 22, 22, 0.55)" }}
     >
       {/* ── MOBILE VIEW: Vertical Card Stack (Hidden on Desktop) ── */}
       <div ref={mobileRef} className="block md:hidden container-xl py-16">

@@ -81,8 +81,21 @@ export const Hero = () => {
         ref={containerRef}
         id="top"
         className="relative grain aurora-bg overflow-hidden"
-        style={{ background: "var(--ink)", minHeight: "100svh" }}
+        style={{ background: "rgba(12, 12, 12, 0.45)", minHeight: "100svh" }}
       >
+        {/* Animated wireframe grid mesh overlay for Hero top */}
+        <div
+          className="absolute inset-0 pointer-events-none z-0 opacity-40 mix-blend-screen"
+          style={{
+            backgroundImage: `
+              radial-gradient(circle at 50% 50%, rgba(184,255,0,0.15) 0%, transparent 70%),
+              linear-gradient(to right, rgba(0,229,255,0.15) 1px, transparent 1px),
+              linear-gradient(to bottom, rgba(168,85,247,0.15) 1px, transparent 1px)
+            `,
+            backgroundSize: "100% 100%, 48px 48px, 48px 48px",
+          }}
+        />
+
         {/* Tier 1 Depth: Ambient background line */}
         <motion.div
           style={{ y: bgY }}

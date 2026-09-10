@@ -42,9 +42,9 @@ export const Featured = () => {
   return (
     <section
       ref={sectionRef}
-      id="featured"
-      className="grain"
-      style={{ background: "var(--ink-2)", paddingBlock: "var(--section-py)" }}
+      id="work"
+      className="relative grain aurora-bg overflow-hidden"
+      style={{ background: "rgba(22, 22, 22, 0.55)", paddingBlock: "var(--section-py)" }}
     >
       <div className="container-xl">
         {/* Label */}
