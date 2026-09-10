@@ -82,7 +82,7 @@ export const Hero = () => {
         id="top"
         className="relative grain aurora-bg overflow-hidden"
         style={{
-          background: "linear-gradient(to bottom, rgba(12, 12, 12, 0.65) 0%, rgba(12, 12, 12, 0.85) 100%)",
+          background: "linear-gradient(to bottom, transparent 0%, rgba(12, 12, 12, 0.75) 100%)",
           minHeight: "100svh",
         }}
       >

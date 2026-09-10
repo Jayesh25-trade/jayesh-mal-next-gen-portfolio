@@ -83,10 +83,11 @@
   /* Living Aurora Glow Background */
   .aurora-bg {
     position: relative;
-    background: radial-gradient(circle at 50% 20%, var(--aurora-1) 0%, transparent 60%),
-                radial-gradient(circle at 80% 60%, var(--aurora-2) 0%, transparent 55%),
-                radial-gradient(circle at 20% 80%, var(--aurora-3) 0%, transparent 60%);
-    animation: aurora-shift 20s ease-in-out infinite alternate;
+    background: radial-gradient(circle at 25% 15%, rgba(0, 229, 255, 0.22) 0%, transparent 55%),
+                radial-gradient(circle at 80% 35%, rgba(168, 85, 247, 0.20) 0%, transparent 50%),
+                radial-gradient(circle at 45% 75%, rgba(184, 255, 0, 0.18) 0%, transparent 55%);
+    background-size: 180% 180%;
+    animation: aurora-move 12s ease-in-out infinite alternate;
   }
 
   /* Noise grain via SVG filter */
@@ -265,21 +266,15 @@
 }
 
 /* ─── Keyframes ──────────────────────────────────────────── */
-@keyframes aurora-shift {
+@keyframes aurora-move {
   0% {
-    --aurora-1: rgba(0, 229, 255, 0.12);
-    --aurora-2: rgba(168, 85, 247, 0.06);
-    --aurora-3: rgba(184, 255, 0, 0.08);
+    background-position: 0% 0%;
   }
   50% {
-    --aurora-1: rgba(184, 255, 0, 0.1);
-    --aurora-2: rgba(0, 229, 255, 0.08);
-    --aurora-3: rgba(244, 63, 94, 0.08);
+    background-position: 100% 70%;
   }
   100% {
-    --aurora-1: rgba(168, 85, 247, 0.12);
-    --aurora-2: rgba(184, 255, 0, 0.08);
-    --aurora-3: rgba(0, 229, 255, 0.1);
+    background-position: 40% 100%;
   }
 }
 
