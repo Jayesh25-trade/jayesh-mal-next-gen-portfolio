@@ -57,14 +57,17 @@ export const FullscreenMenu = () => {
     <>
       {/* ── Header bar ── */}
       <header
-        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 sm:px-10 py-4 sm:py-6"
-        style={{ mixBlendMode: open ? "normal" : "normal" }}
+        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 sm:px-10 py-3 sm:py-5 pointer-events-none"
       >
-        {/* Logo */}
+        {/* Logo Capsule */}
         <motion.a
           href="#"
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-          className="flex items-center gap-2.5 z-[101]"
+          className={`pointer-events-auto flex items-center gap-2.5 z-[101] px-4 py-2 rounded-full transition-all duration-300 ${
+            open
+              ? "bg-transparent shadow-none"
+              : "bg-ink/85 backdrop-blur-xl border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.5)]"
+          }`}
           whileHover={{ scale: 1.03 }}
         >
           <span
@@ -79,7 +82,7 @@ export const FullscreenMenu = () => {
           <span
             className="hidden sm:inline text-sm font-medium tracking-wide"
             style={{
-              color: open ? "var(--ink)" : "var(--muted)",
+              color: open ? "var(--ink)" : "var(--cream)",
               transition: "color 0.4s",
               fontFamily: "var(--font-body)",
             }}
@@ -88,33 +91,39 @@ export const FullscreenMenu = () => {
           </span>
         </motion.a>
 
-        {/* Right: lang switcher + hamburger */}
-        <div className="flex items-center gap-4 z-[101]">
+        {/* Right Action Capsule: Language Switcher + Hamburger Menu */}
+        <div
+          className={`pointer-events-auto flex items-center gap-3.5 z-[101] px-3.5 py-1.5 rounded-full transition-all duration-300 ${
+            open
+              ? "bg-transparent shadow-none"
+              : "bg-ink/85 backdrop-blur-xl border border-white/15 shadow-[0_8px_32px_rgba(0,0,0,0.5)] text-cream"
+          }`}
+        >
           <div style={{ filter: open ? "invert(1)" : "none", transition: "filter 0.4s" }}>
             <LanguageSwitcher />
           </div>
           <button
             onClick={() => setOpen(!open)}
             aria-label={open ? "Close menu" : "Open menu"}
-            className="relative w-8 h-5 flex flex-col justify-between"
+            className="relative w-7 h-4 flex flex-col justify-between cursor-pointer focus:outline-none"
           >
             <motion.span
-              animate={open ? { rotate: 45, y: 9 } : { rotate: 0, y: 0 }}
+              animate={open ? { rotate: 45, y: 7.5 } : { rotate: 0, y: 0 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="block h-[1.5px] w-full origin-center"
-              style={{ background: open ? "var(--ink)" : "var(--text)" }}
+              className="block h-[1.5px] w-full origin-center rounded-full"
+              style={{ background: open ? "var(--ink)" : "var(--cream)" }}
             />
             <motion.span
               animate={open ? { scaleX: 0, opacity: 0 } : { scaleX: 1, opacity: 1 }}
               transition={{ duration: 0.25 }}
-              className="block h-[1.5px] w-2/3"
-              style={{ background: open ? "var(--ink)" : "var(--text)" }}
+              className="block h-[1.5px] w-2/3 rounded-full"
+              style={{ background: open ? "var(--ink)" : "var(--cream)" }}
             />
             <motion.span
-              animate={open ? { rotate: -45, y: -9 } : { rotate: 0, y: 0 }}
+              animate={open ? { rotate: -45, y: -7.5 } : { rotate: 0, y: 0 }}
               transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="block h-[1.5px] w-full origin-center"
-              style={{ background: open ? "var(--ink)" : "var(--text)" }}
+              className="block h-[1.5px] w-full origin-center rounded-full"
+              style={{ background: open ? "var(--ink)" : "var(--cream)" }}
             />
           </button>
         </div>
