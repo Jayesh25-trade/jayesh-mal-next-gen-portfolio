@@ -1,16 +1,49 @@
-import { Suspense, useRef, useEffect, useState } from "react";
+import { Component, Suspense, useRef, useEffect, useState, ReactNode } from "react";
 import { Canvas } from "@react-three/fiber";
 import { ParticleField } from "./ParticleField";
 import { FloatingGrid } from "./FloatingGrid";
 import { CameraRig } from "./CameraRig";
 import { LiquidMesh } from "./LiquidMesh";
 
+class WebGLErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+  componentDidCatch(error: unknown) {
+    console.warn("WebGL Context failed gracefully:", error);
+  }
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
+
+const checkWebGLSupport = () => {
+  if (typeof window === "undefined") return false;
+  try {
+    const canvas = document.createElement("canvas");
+    return !!(
+      window.WebGLRenderingContext &&
+      (canvas.getContext("webgl") || canvas.getContext("experimental-webgl"))
+    );
+  } catch (e) {
+    return false;
+  }
+};
+
 export const Scene = () => {
   const scrollProgress = useRef(0);
   const mousePos = useRef<[number, number]>([0, 0]);
   const [mobile, setMobile] = useState(false);
+  const [webglSupported, setWebglSupported] = useState(true);
 
   useEffect(() => {
+    setWebglSupported(checkWebGLSupport());
+
     const checkMobile = () => {
       setMobile(window.innerWidth < 768);
     };
@@ -51,28 +84,32 @@ export const Scene = () => {
     };
   }, []);
 
+  if (!webglSupported) return null;
+
   return (
-    <div
-      className="fixed inset-0 z-0 pointer-events-none"
-      aria-hidden="true"
-      style={{ isolation: "isolate" }}
-    >
-      <Canvas
-        camera={{ position: [0, 0, 8], fov: 60 }}
-        gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
-        dpr={mobile ? [1, 1] : [1, 1.5]}
-        style={{ background: "transparent" }}
+    <WebGLErrorBoundary>
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        aria-hidden="true"
+        style={{ isolation: "isolate" }}
       >
-        <Suspense fallback={null}>
-          <CameraRig scrollProgress={scrollProgress} />
-          <LiquidMesh scrollProgress={scrollProgress} mousePos={mousePos} />
-          <ParticleField scrollProgress={scrollProgress} count={mobile ? 600 : 1600} />
-          <FloatingGrid scrollProgress={scrollProgress} />
-          <ambientLight intensity={0.3} />
-          <pointLight position={[5, 5, 5]} intensity={0.5} color="#00e5ff" />
-          <pointLight position={[-5, -3, 3]} intensity={0.4} color="#a855f7" />
-        </Suspense>
-      </Canvas>
-    </div>
+        <Canvas
+          camera={{ position: [0, 0, 8], fov: 60 }}
+          gl={{ antialias: false, alpha: true, powerPreference: "high-performance" }}
+          dpr={mobile ? [1, 1] : [1, 1.5]}
+          style={{ background: "transparent" }}
+        >
+          <Suspense fallback={null}>
+            <CameraRig scrollProgress={scrollProgress} />
+            <LiquidMesh scrollProgress={scrollProgress} mousePos={mousePos} />
+            <ParticleField scrollProgress={scrollProgress} count={mobile ? 400 : 1600} />
+            <FloatingGrid scrollProgress={scrollProgress} />
+            <ambientLight intensity={0.3} />
+            <pointLight position={[5, 5, 5]} intensity={0.5} color="#00e5ff" />
+            <pointLight position={[-5, -3, 3]} intensity={0.4} color="#a855f7" />
+          </Suspense>
+        </Canvas>
+      </div>
+    </WebGLErrorBoundary>
   );
 };
