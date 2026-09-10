@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -45,18 +45,66 @@ const STEPS = [
   },
 ];
 
-/* ── Mobile vertical layout ─────────────────────────────── */
-const MobileProcess = () => {
-  const ref = useRef<HTMLElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-60px" });
+export const Process = () => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const pathRef = useRef<SVGPathElement>(null);
+  const mobileRef = useRef<HTMLDivElement>(null);
+  const isMobileInView = useInView(mobileRef, { once: true, margin: "-60px" });
+
+  useEffect(() => {
+    // Only initialize GSAP pinned horizontal scroll on desktop (width >= 768)
+    if (typeof window === "undefined" || window.innerWidth < 768) return;
+
+    const track = trackRef.current;
+    const section = sectionRef.current;
+    const path = pathRef.current;
+    if (!track || !section) return;
+
+    const totalScroll = track.scrollWidth - window.innerWidth;
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: "top top",
+          end: () => `+=${totalScroll + window.innerHeight}`,
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+        },
+      });
+
+      tl.to(track, { x: -totalScroll, ease: "none" });
+
+      if (path) {
+        const pathLength = path.getTotalLength();
+        gsap.set(path, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
+        gsap.to(path, {
+          strokeDashoffset: 0,
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () => `+=${totalScroll + window.innerHeight}`,
+            scrub: 1,
+          },
+        });
+      }
+    }, section);
+
+    return () => ctx.revert();
+  }, []);
+
   return (
     <section
-      ref={ref}
+      ref={sectionRef}
       id="process"
       className="grain aurora-bg relative overflow-hidden"
-      style={{ background: "var(--ink-2)", padding: "70px 0" }}
+      style={{ background: "var(--ink-2)" }}
     >
-      <div className="container-xl">
+      {/* ── MOBILE VIEW: Vertical Card Stack (Hidden on Desktop) ── */}
+      <div ref={mobileRef} className="block md:hidden container-xl py-16">
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-acid" />
@@ -82,7 +130,7 @@ const MobileProcess = () => {
               <motion.div
                 key={s.num}
                 initial={{ opacity: 0, y: 24 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
+                animate={isMobileInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: i * 0.12, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
                 className="p-6 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-md relative overflow-hidden group"
               >
@@ -140,65 +188,9 @@ const MobileProcess = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
-};
 
-/* ── Desktop horizontal pin layout ──────────────────────── */
-const DesktopProcess = () => {
-  const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const pathRef = useRef<SVGPathElement>(null);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    const section = sectionRef.current;
-    const path = pathRef.current;
-    if (!track || !section) return;
-
-    const totalScroll = track.scrollWidth - window.innerWidth;
-
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: section,
-          start: "top top",
-          end: () => `+=${totalScroll + window.innerHeight}`,
-          pin: true,
-          scrub: 1,
-          anticipatePin: 1,
-        },
-      });
-
-      tl.to(track, { x: -totalScroll, ease: "none" });
-
-      if (path) {
-        const pathLength = path.getTotalLength();
-        gsap.set(path, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
-        gsap.to(path, {
-          strokeDashoffset: 0,
-          ease: "none",
-          scrollTrigger: {
-            trigger: section,
-            start: "top top",
-            end: () => `+=${totalScroll + window.innerHeight}`,
-            scrub: 1,
-          },
-        });
-      }
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
-
-  return (
-    <section
-      ref={sectionRef}
-      id="process"
-      className="grain aurora-bg overflow-hidden"
-      style={{ background: "var(--ink-2)" }}
-    >
-      <div className="h-screen flex flex-col justify-center relative" style={{ paddingBlock: "5vh" }}>
+      {/* ── DESKTOP VIEW: Horizontal Pin Track (Hidden on Mobile) ── */}
+      <div className="hidden md:flex h-screen flex-col justify-center relative" style={{ paddingBlock: "5vh" }}>
         <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-10">
           <svg className="w-full h-24 overflow-visible" viewBox="0 0 1440 100" fill="none" preserveAspectRatio="none">
             <path
@@ -327,17 +319,4 @@ const DesktopProcess = () => {
   );
 };
 
-/* ── Responsive wrapper ──────────────────────────────────── */
-export const Process = () => {
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth < 768);
-    check();
-    window.addEventListener("resize", check);
-    return () => window.removeEventListener("resize", check);
-  }, []);
-
-  return isMobile ? <MobileProcess /> : <DesktopProcess />;
-};
 
