@@ -22,8 +22,8 @@ export const Values = () => {
     <section
       ref={ref}
       id="values"
-      className="relative grain aurora-bg overflow-hidden"
-      style={{ background: "rgba(12, 12, 12, 0.5)", paddingBlock: "var(--section-py)" }}
+      className="grain"
+      style={{ background: "var(--ink)", paddingBlock: "var(--section-py)" }}
     >
       <div className="container-xl">
         {/* Label + heading */}
