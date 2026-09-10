@@ -57,33 +57,38 @@ export const FullscreenMenu = () => {
     <>
       {/* ── Header bar ── */}
       <header
-        className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 sm:px-10 py-3.5 sm:py-4 transition-all duration-300 ${
-          open
-            ? "bg-transparent border-b border-transparent"
-            : "bg-ink/90 backdrop-blur-xl border-b border-white/10 shadow-[0_8px_30px_rgba(0,0,0,0.5)]"
-        }`}
+        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 sm:px-10 py-3 sm:py-4 transition-all duration-300"
+        style={{
+          background: open ? "transparent" : "#0C0C0C",
+          backdropFilter: open ? "none" : "blur(20px)",
+          WebkitBackdropFilter: open ? "none" : "blur(20px)",
+          borderBottom: open ? "1px solid transparent" : "1px solid rgba(255, 255, 255, 0.15)",
+          boxShadow: open ? "none" : "0 8px 30px rgba(0, 0, 0, 0.7)",
+        }}
       >
         {/* Logo */}
         <motion.a
           href="#"
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-          className="flex items-center gap-2.5 z-[101]"
-          whileHover={{ scale: 1.03 }}
+          className="flex items-center gap-2 sm:gap-3 z-[101]"
+          whileHover={{ scale: 1.02 }}
         >
-          <span
-            className="font-display font-black text-base sm:text-lg tracking-tighter"
+          <div
+            className="flex items-center justify-center px-2.5 py-1 rounded-md font-display font-black text-sm sm:text-base tracking-tighter"
             style={{
-              color: open ? "var(--ink)" : "var(--cream)",
-              transition: "color 0.4s",
+              background: open ? "var(--ink)" : "rgba(255, 255, 255, 0.12)",
+              border: open ? "1px solid var(--ink)" : "1px solid rgba(255, 255, 255, 0.25)",
+              color: open ? "var(--acid)" : "#FFFFFF",
+              transition: "all 0.3s",
             }}
           >
-            <span style={{ color: open ? "var(--ink)" : "var(--acid)" }}>J</span>D
-          </span>
+            <span style={{ color: "var(--acid)" }}>J</span>D
+          </div>
           <span
-            className="hidden sm:inline text-sm font-semibold tracking-wide"
+            className="text-xs sm:text-sm font-bold tracking-wide"
             style={{
-              color: open ? "var(--ink)" : "var(--cream)",
-              transition: "color 0.4s",
+              color: open ? "var(--ink)" : "#FFFFFF",
+              transition: "color 0.3s",
               fontFamily: "var(--font-body)",
             }}
           >
@@ -92,7 +97,7 @@ export const FullscreenMenu = () => {
         </motion.a>
 
         {/* Right Action Group: Language Switcher + Hamburger Menu */}
-        <div className="flex items-center gap-4 z-[101]">
+        <div className="flex items-center gap-3 sm:gap-4 z-[101]">
           <div style={{ filter: open ? "invert(1)" : "none", transition: "filter 0.4s" }}>
             <LanguageSwitcher />
           </div>
@@ -100,25 +105,30 @@ export const FullscreenMenu = () => {
           <button
             onClick={() => setOpen(!open)}
             aria-label={open ? "Close menu" : "Open menu"}
-            className="relative w-8 h-5 flex flex-col justify-between cursor-pointer focus:outline-none"
+            className="relative w-9 h-9 rounded-full flex flex-col items-center justify-center gap-1 cursor-pointer focus:outline-none transition-all duration-300"
+            style={{
+              background: open ? "var(--ink)" : "rgba(255, 255, 255, 0.12)",
+              border: open ? "1px solid var(--ink)" : "1px solid rgba(255, 255, 255, 0.25)",
+              boxShadow: open ? "none" : "0 2px 8px rgba(0, 0, 0, 0.4)",
+            }}
           >
             <motion.span
-              animate={open ? { rotate: 45, y: 9 } : { rotate: 0, y: 0 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="block h-[2px] w-full origin-center rounded-full"
-              style={{ background: open ? "var(--ink)" : "var(--acid)" }}
+              animate={open ? { rotate: 45, y: 3 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="block h-[2px] w-4 rounded-full"
+              style={{ background: open ? "var(--acid)" : "var(--acid)" }}
             />
             <motion.span
-              animate={open ? { scaleX: 0, opacity: 0 } : { scaleX: 1, opacity: 1 }}
-              transition={{ duration: 0.25 }}
-              className="block h-[2px] w-3/4 self-end rounded-full"
-              style={{ background: open ? "var(--ink)" : "var(--cream)" }}
+              animate={open ? { opacity: 0 } : { opacity: 1 }}
+              transition={{ duration: 0.2 }}
+              className="block h-[2px] w-4 rounded-full"
+              style={{ background: open ? "#FFFFFF" : "#FFFFFF" }}
             />
             <motion.span
-              animate={open ? { rotate: -45, y: -9 } : { rotate: 0, y: 0 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-              className="block h-[2px] w-full origin-center rounded-full"
-              style={{ background: open ? "var(--ink)" : "var(--acid)" }}
+              animate={open ? { rotate: -45, y: -3 } : { rotate: 0, y: 0 }}
+              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+              className="block h-[2px] w-4 rounded-full"
+              style={{ background: open ? "var(--acid)" : "var(--acid)" }}
             />
           </button>
         </div>

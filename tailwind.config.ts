@@ -12,6 +12,11 @@ export default {
         sans: ['Inter', 'system-ui', 'sans-serif'],
       },
       colors: {
+        ink: "#0C0C0C",
+        "ink-2": "#161616",
+        cream: "#F2EDE4",
+        acid: "#B8FF00",
+        wire: "#282828",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
