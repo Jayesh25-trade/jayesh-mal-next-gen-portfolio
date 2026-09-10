@@ -2,6 +2,7 @@ import { I18nProvider } from "@/i18n/I18nProvider";
 import { LenisProvider } from "@/components/smooth-scroll/LenisProvider";
 import { Scene } from "@/components/webgl/Scene";
 import { MagneticCursor } from "@/components/cursor/MagneticCursor";
+import { ScribbleWebSlinger } from "@/components/portfolio/ScribbleWebSlinger";
 import { Navbar } from "@/components/portfolio/Navbar";
 import { Hero } from "@/components/portfolio/Hero";
 import { KineticPillars } from "@/components/portfolio/KineticPillars";
@@ -31,6 +32,9 @@ const Index = () => {
 
         {/* Counter-scrolling Kinetic Typography Pillars & Mobile Progress Bar */}
         <KineticPillars />
+
+        {/* Scribble Web-Slinger Spiderman Scroll Companion */}
+        <ScribbleWebSlinger />
 
         {/* All content sits above the WebGL canvas via z-index */}
         <main className="relative min-h-screen" style={{ zIndex: 1 }}>
