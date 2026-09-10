@@ -84,7 +84,7 @@ export const Scene = () => {
     };
   }, []);
 
-  if (!webglSupported) return null;
+  if (!webglSupported || mobile) return null;
 
   return (
     <WebGLErrorBoundary>

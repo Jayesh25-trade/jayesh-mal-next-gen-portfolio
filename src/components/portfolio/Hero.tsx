@@ -62,13 +62,14 @@ export const Hero = () => {
   const scrollVelocity = useVelocity(scrollY);
   const rawSkew = useTransform(scrollVelocity, [-2000, 2000], [-3, 3]);
   const skewY = useSpring(rawSkew, { stiffness: 300, damping: 30 });
+  const activeSkewY = mobile ? 0 : skewY;
 
-  // 4-tier z-space depth parallax — optimized for mobile, iPad & desktop
-  const bgY    = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "5%"] : ["0%", "10%"]);
-  const textY  = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "18%"] : ["0%", "40%"]);
-  const cardY  = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "15%"] : ["0%", "30%"]);
-  const shardY = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "30%"] : ["0%", "100%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.7], mobile ? [1, 0.2] : [1, 0]);
+  // 4-tier z-space depth parallax — desktop & tablet
+  const bgY    = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "0%"] : ["0%", "10%"]);
+  const textY  = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "0%"] : ["0%", "40%"]);
+  const cardY  = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "0%"] : ["0%", "30%"]);
+  const shardY = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "0%"] : ["0%", "100%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.7], mobile ? [1, 1] : [1, 0]);
 
   const words1 = t.hero.title1.split(" ");
   const words2 = t.hero.title2.split(" ");
@@ -80,7 +81,7 @@ export const Hero = () => {
         ref={containerRef}
         id="top"
         className="relative grain aurora-bg overflow-hidden"
-        style={{ background: "rgba(10, 10, 12, 0.7)", minHeight: "100svh" }}
+        style={{ background: "var(--ink)", minHeight: "100svh" }}
       >
         {/* Tier 1 Depth: Ambient background line */}
         <motion.div
@@ -112,7 +113,7 @@ export const Hero = () => {
           {/* HERO LAYOUT: Full width kinetic headline */}
           <div className="relative">
             <motion.div
-              style={{ y: textY, skewY, opacity }}
+              style={{ y: textY, skewY: activeSkewY, opacity }}
               className="relative w-full z-10"
             >
               <h1
