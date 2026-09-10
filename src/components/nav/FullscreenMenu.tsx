@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import type { Variants } from "framer-motion";
 import { useI18n } from "@/i18n/I18nProvider";
 import { LanguageSwitcher } from "@/components/portfolio/LanguageSwitcher";
 
@@ -11,12 +12,12 @@ const NAV_LINKS = [
   { href: "#contact", label: "Contact" },
 ];
 
-const menuVars = {
+const menuVars: Variants = {
   hidden: { clipPath: "inset(0 0 100% 0)", transition: { duration: 0.6, ease: [0.76, 0, 0.24, 1] } },
   visible: { clipPath: "inset(0 0 0% 0)", transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] } },
 };
 
-const linkVars = {
+const linkVars: Variants = {
   hidden: { y: 80, opacity: 0 },
   visible: (i: number) => ({
     y: 0, opacity: 1,
