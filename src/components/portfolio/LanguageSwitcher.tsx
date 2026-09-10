@@ -13,17 +13,16 @@ export const LanguageSwitcher = () => {
     <div className="relative">
       <button
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs sm:text-sm transition-all cursor-pointer font-bold hover:scale-105 pointer-events-auto"
+        className="flex items-center gap-2 text-xs sm:text-sm font-bold transition-all cursor-pointer hover:opacity-80 pointer-events-auto drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]"
         style={{
-          background: "var(--acid)",
-          color: "var(--ink)",
-          border: "1px solid rgba(12, 12, 12, 0.15)",
-          boxShadow: "0 4px 16px rgba(184, 255, 0, 0.4)",
+          background: "transparent",
+          border: "none",
+          color: "#FFFFFF",
         }}
         aria-label="Change language"
       >
-        <Globe className="w-4 h-4 shrink-0 stroke-[2.5]" style={{ color: "var(--ink)" }} />
-        <span className="font-extrabold tracking-wide" style={{ color: "var(--ink)" }}>{current?.native}</span>
+        <Globe className="w-4 h-4 shrink-0 stroke-[2]" style={{ color: "var(--acid)" }} />
+        <span className="font-bold tracking-wide" style={{ color: "#FFFFFF" }}>{current?.native}</span>
       </button>
       <AnimatePresence>
         {open && (
