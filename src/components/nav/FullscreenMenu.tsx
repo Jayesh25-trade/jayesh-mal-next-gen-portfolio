@@ -55,39 +55,43 @@ export const FullscreenMenu = () => {
 
   return (
     <>
-      {/* ── Header bar ── */}
+      {/* ── Floating Capsule Header (No middle background bar) ── */}
       <header
-        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 sm:px-10 py-3 sm:py-4 transition-all duration-300"
+        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 sm:px-10 py-3 sm:py-4 pointer-events-none transition-all duration-300"
         style={{
-          background: open ? "transparent" : "#0C0C0C",
-          backdropFilter: open ? "none" : "blur(20px)",
-          WebkitBackdropFilter: open ? "none" : "blur(20px)",
-          borderBottom: open ? "1px solid transparent" : "1px solid rgba(255, 255, 255, 0.15)",
-          boxShadow: open ? "none" : "0 8px 30px rgba(0, 0, 0, 0.7)",
+          background: "transparent",
+          backdropFilter: "none",
+          WebkitBackdropFilter: "none",
+          border: "none",
+          boxShadow: "none",
         }}
       >
-        {/* Logo */}
+        {/* Logo Floating Capsule */}
         <motion.a
           href="#"
           onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
-          className="flex items-center gap-2 sm:gap-3 z-[101]"
-          whileHover={{ scale: 1.02 }}
+          className="flex items-center gap-2 sm:gap-3 z-[101] pointer-events-auto px-3.5 py-1.5 rounded-full transition-all"
+          style={{
+            background: open ? "var(--ink)" : "var(--acid)",
+            border: "1px solid rgba(12, 12, 12, 0.15)",
+            boxShadow: open ? "0 4px 20px rgba(0, 0, 0, 0.5)" : "0 4px 16px rgba(184, 255, 0, 0.4)",
+          }}
+          whileHover={{ scale: 1.04 }}
         >
           <div
-            className="flex items-center justify-center px-2.5 py-1 rounded-md font-display font-black text-sm sm:text-base tracking-tighter"
+            className="flex items-center justify-center px-2 py-0.5 rounded-full font-display font-black text-xs sm:text-sm tracking-tighter"
             style={{
-              background: open ? "var(--ink)" : "rgba(255, 255, 255, 0.12)",
-              border: open ? "1px solid var(--ink)" : "1px solid rgba(255, 255, 255, 0.25)",
-              color: open ? "var(--acid)" : "#FFFFFF",
+              background: open ? "var(--acid)" : "var(--ink)",
+              color: open ? "var(--ink)" : "var(--acid)",
               transition: "all 0.3s",
             }}
           >
-            <span style={{ color: "var(--acid)" }}>J</span>D
+            JD
           </div>
           <span
-            className="text-xs sm:text-sm font-bold tracking-wide"
+            className="text-xs sm:text-sm font-extrabold tracking-wide"
             style={{
-              color: open ? "var(--ink)" : "#FFFFFF",
+              color: open ? "#FFFFFF" : "var(--ink)",
               transition: "color 0.3s",
               fontFamily: "var(--font-body)",
             }}
@@ -96,8 +100,8 @@ export const FullscreenMenu = () => {
           </span>
         </motion.a>
 
-        {/* Right Action Group: Language Switcher + Hamburger Menu */}
-        <div className="flex items-center gap-3 sm:gap-4 z-[101]">
+        {/* Right Action Group Floating Capsules */}
+        <div className="flex items-center gap-3 sm:gap-4 z-[101] pointer-events-auto">
           <div style={{ filter: open ? "invert(1)" : "none", transition: "filter 0.4s" }}>
             <LanguageSwitcher />
           </div>
@@ -105,30 +109,30 @@ export const FullscreenMenu = () => {
           <button
             onClick={() => setOpen(!open)}
             aria-label={open ? "Close menu" : "Open menu"}
-            className="relative w-9 h-9 rounded-full flex flex-col items-center justify-center gap-1 cursor-pointer focus:outline-none transition-all duration-300"
+            className="relative w-9 h-9 sm:w-10 sm:h-10 rounded-full flex flex-col items-center justify-center gap-1 cursor-pointer focus:outline-none transition-all duration-300 hover:scale-105 pointer-events-auto"
             style={{
-              background: open ? "var(--ink)" : "rgba(255, 255, 255, 0.12)",
-              border: open ? "1px solid var(--ink)" : "1px solid rgba(255, 255, 255, 0.25)",
-              boxShadow: open ? "none" : "0 2px 8px rgba(0, 0, 0, 0.4)",
+              background: open ? "var(--ink)" : "var(--acid)",
+              border: "1px solid rgba(12, 12, 12, 0.15)",
+              boxShadow: open ? "0 4px 20px rgba(0, 0, 0, 0.5)" : "0 4px 16px rgba(184, 255, 0, 0.4)",
             }}
           >
             <motion.span
               animate={open ? { rotate: 45, y: 3 } : { rotate: 0, y: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="block h-[2px] w-4 rounded-full"
-              style={{ background: open ? "var(--acid)" : "var(--acid)" }}
+              className="block h-[2.5px] w-4 rounded-full"
+              style={{ background: open ? "var(--acid)" : "var(--ink)" }}
             />
             <motion.span
               animate={open ? { opacity: 0 } : { opacity: 1 }}
               transition={{ duration: 0.2 }}
-              className="block h-[2px] w-4 rounded-full"
-              style={{ background: open ? "#FFFFFF" : "#FFFFFF" }}
+              className="block h-[2.5px] w-4 rounded-full"
+              style={{ background: open ? "#FFFFFF" : "var(--ink)" }}
             />
             <motion.span
               animate={open ? { rotate: -45, y: -3 } : { rotate: 0, y: 0 }}
               transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="block h-[2px] w-4 rounded-full"
-              style={{ background: open ? "var(--acid)" : "var(--acid)" }}
+              className="block h-[2.5px] w-4 rounded-full"
+              style={{ background: open ? "var(--acid)" : "var(--ink)" }}
             />
           </button>
         </div>
