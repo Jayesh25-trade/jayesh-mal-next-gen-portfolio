@@ -178,16 +178,16 @@ export const Hero = () => {
           className="container-xl pb-8 lg:pb-10 z-10 relative"
           style={{ borderTop: "1px solid var(--wire)" }}
         >
-          <div className="flex items-center gap-8 sm:gap-14 pt-6 overflow-x-auto">
+          <div className="grid grid-cols-2 gap-4 sm:flex sm:items-center sm:gap-14 pt-6">
             {[
               { n: "20+", l: "Projects shipped" },
               { n: "15+", l: "Happy clients" },
               { n: "3+", l: "Years" },
               { n: "99%", l: "Client retention" },
             ].map(({ n, l }) => (
-              <div key={l} className="shrink-0">
-                <span className="font-display font-black text-2xl sm:text-3xl text-acid">{n}</span>
-                <span className="ml-2 text-xs sm:text-sm text-muted font-body">{l}</span>
+              <div key={l} className="shrink-0 flex items-baseline">
+                <span className="font-display font-black text-xl sm:text-3xl text-acid">{n}</span>
+                <span className="ml-1.5 text-xs sm:text-sm text-muted font-body leading-tight">{l}</span>
               </div>
             ))}
           </div>

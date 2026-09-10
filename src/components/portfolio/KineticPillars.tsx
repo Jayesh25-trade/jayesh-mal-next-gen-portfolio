@@ -123,22 +123,6 @@ export const KineticPillars = () => {
         </div>
 
       </div>
-
-      {/* ── MOBILE FIRST: Kinetic Horizontal Marquee Banner (Mobile & Small Screens) ── */}
-      <div className="lg:hidden w-full overflow-hidden border-y border-wire/60 py-2.5 bg-ink/80 backdrop-blur-md relative z-20 pointer-events-none my-6">
-        <motion.div
-          animate={{ x: ["0%", "-50%"] }}
-          transition={{ repeat: Infinity, duration: 18, ease: "linear" }}
-          className="flex items-center whitespace-nowrap font-mono text-[11px] text-acid tracking-widest uppercase font-bold gap-6"
-        >
-          <span>✦ DESIGN • MOTION • FULL-STACK ENGINEERING ✦</span>
-          <span>✦ 100% PRODUCTION READY ✦</span>
-          <span>✦ ZERO TECHNICAL DEBT ✦</span>
-          <span>✦ DESIGN • MOTION • FULL-STACK ENGINEERING ✦</span>
-          <span>✦ 100% PRODUCTION READY ✦</span>
-          <span>✦ ZERO TECHNICAL DEBT ✦</span>
-        </motion.div>
-      </div>
     </>
   );
 };
