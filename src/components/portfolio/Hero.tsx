@@ -81,7 +81,10 @@ export const Hero = () => {
         ref={containerRef}
         id="top"
         className="relative grain aurora-bg overflow-hidden"
-        style={{ background: "transparent", minHeight: "100svh" }}
+        style={{
+          background: "linear-gradient(to bottom, rgba(12, 12, 12, 0.65) 0%, rgba(12, 12, 12, 0.85) 100%)",
+          minHeight: "100svh",
+        }}
       >
 
         {/* Tier 1 Depth: Ambient background line */}

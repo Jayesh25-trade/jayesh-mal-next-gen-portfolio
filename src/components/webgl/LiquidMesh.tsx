@@ -56,11 +56,11 @@ export const LiquidMesh = ({ scrollProgress, mousePos, mobile = false }: LiquidM
     uniform vec2 uMouse;
 
     void main() {
-      // Iridescent vibrant palette: Cyan -> Magenta -> Acid Green -> Neon Purple
-      vec3 colorCyan   = vec3(0.0, 0.95, 1.0);
-      vec3 colorPurple = vec3(0.70, 0.25, 1.0);
-      vec3 colorAcid   = vec3(0.85, 1.0, 0.0);
-      vec3 colorPink   = vec3(1.0, 0.2, 0.6);
+      // Deep dark cybernetic palette (Cyan -> Dark Purple -> Subtle Acid Green -> Magenta)
+      vec3 colorCyan   = vec3(0.0, 0.35, 0.45);
+      vec3 colorPurple = vec3(0.35, 0.12, 0.45);
+      vec3 colorAcid   = vec3(0.35, 0.50, 0.0);
+      vec3 colorPink   = vec3(0.45, 0.10, 0.30);
 
       float t = vPosition.z * 1.5 + sin(uTime * 0.6) * 0.5 + uScroll * 1.0;
       
@@ -70,15 +70,16 @@ export const LiquidMesh = ({ scrollProgress, mousePos, mobile = false }: LiquidM
 
       // Cursor light specular highlight
       float cursorDist = distance(vUv, (uMouse + 1.0) * 0.5);
-      float cursorGlow = exp(-cursorDist * 3.5) * 1.0;
-      color += vec3(cursorGlow * 0.6);
+      float cursorGlow = exp(-cursorDist * 3.5) * 0.4;
+      color += vec3(cursorGlow * 0.3);
 
-      // Liquid crystal grid wireframe outline (more prominent wavy mesh)
-      float gridX = abs(sin(vUv.x * 48.0));
-      float gridY = abs(sin(vUv.y * 48.0));
-      float gridLine = smoothstep(0.92, 1.0, max(gridX, gridY)) * 0.45;
+      // Liquid crystal grid wireframe outline (crisp subtle mesh)
+      float gridX = abs(sin(vUv.x * 52.0));
+      float gridY = abs(sin(vUv.y * 52.0));
+      float gridLine = smoothstep(0.95, 1.0, max(gridX, gridY)) * 0.25;
 
-      float alpha = clamp(0.35 + abs(vPosition.z) * 0.25 + gridLine + cursorGlow * 0.4, 0.15, 0.85);
+      // Dark ambient alpha output — no blinding glare
+      float alpha = clamp(0.08 + abs(vPosition.z) * 0.12 + gridLine * 0.2 + cursorGlow * 0.2, 0.04, 0.38);
 
       gl_FragColor = vec4(color, alpha);
     }
@@ -102,7 +103,7 @@ export const LiquidMesh = ({ scrollProgress, mousePos, mobile = false }: LiquidM
         uniforms={uniforms}
         transparent
         depthWrite={false}
-        blending={THREE.AdditiveBlending}
+        blending={THREE.NormalBlending}
         side={THREE.DoubleSide}
       />
     </mesh>
