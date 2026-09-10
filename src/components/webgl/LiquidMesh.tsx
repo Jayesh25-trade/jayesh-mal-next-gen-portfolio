@@ -77,7 +77,7 @@ export const LiquidMesh = ({ scrollProgress, mousePos }: LiquidMeshProps) => {
       float gridY = abs(sin(vUv.y * 60.0));
       float grid = smoothstep(0.96, 1.0, max(gridX, gridY)) * 0.15;
 
-      float alpha = clamp(0.12 + abs(vPosition.z) * 0.15 + grid + cursorGlow * 0.2, 0.05, 0.45);
+      float alpha = clamp(0.22 + abs(vPosition.z) * 0.2 + grid + cursorGlow * 0.35, 0.08, 0.65);
 
       gl_FragColor = vec4(color, alpha);
     }

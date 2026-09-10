@@ -57,7 +57,7 @@ export const FullscreenMenu = () => {
     <>
       {/* ── Header bar ── */}
       <header
-        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-6 sm:px-10 py-5 sm:py-6"
+        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-5 sm:px-10 py-4 sm:py-6"
         style={{ mixBlendMode: open ? "normal" : "normal" }}
       >
         {/* Logo */}
@@ -146,7 +146,7 @@ export const FullscreenMenu = () => {
                     onClick={() => go(link.href)}
                     className="block w-full text-left font-display font-black tracking-tighter leading-none py-3 sm:py-4 border-b"
                     style={{
-                      fontSize: "clamp(44px, 8vw, 120px)",
+                      fontSize: "clamp(32px, 8vw, 120px)",
                       color: "var(--ink)",
                       borderColor: "rgba(0,0,0,0.12)",
                     }}

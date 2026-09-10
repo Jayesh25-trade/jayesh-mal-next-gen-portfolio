@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useVelocity, useSpring } from "framer-motion";
-import { ArrowDownRight } from "lucide-react";
+import { ArrowDownRight, Mail, Phone, MapPin, Award, CheckCircle2, Terminal } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 
-/* Custom minimal cursor that follows mouse */
+const isTouchDevice = () =>
+  typeof window !== "undefined" &&
+  ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
+/* Custom minimal cursor that follows mouse — desktop only */
 const EditorialCursor = () => {
   const cursorRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
+    if (isTouchDevice()) return;
     const move = (e: MouseEvent) => {
       if (cursorRef.current) {
         cursorRef.current.style.transform = `translate(${e.clientX - 8}px, ${e.clientY - 8}px)`;
@@ -15,6 +20,7 @@ const EditorialCursor = () => {
     window.addEventListener("mousemove", move);
     return () => window.removeEventListener("mousemove", move);
   }, []);
+  if (isTouchDevice()) return null;
   return (
     <div
       ref={cursorRef}
@@ -41,19 +47,28 @@ const CurtainWord = ({ word, delay = 0 }: { word: string; delay?: number }) => (
 export const Hero = () => {
   const { t } = useI18n();
   const containerRef = useRef<HTMLElement>(null);
+  const [mobile, setMobile] = useState(isTouchDevice());
+
+  useEffect(() => {
+    const check = () => setMobile(window.innerWidth < 768 || isTouchDevice());
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
   const { scrollYProgress, scrollY } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
 
-  // Scroll Velocity tracking for kinetic skew
+  // Scroll Velocity tracking for kinetic skew — desktop only
   const scrollVelocity = useVelocity(scrollY);
   const rawSkew = useTransform(scrollVelocity, [-2000, 2000], [-3, 3]);
   const skewY = useSpring(rawSkew, { stiffness: 300, damping: 30 });
 
-  // 4-tier z-space depth parallax
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
-  const portraitY = useTransform(scrollYProgress, [0, 1], ["0%", "70%"]);
-  const shardY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
+  // 4-tier z-space depth parallax — optimized for mobile, iPad & desktop
+  const bgY    = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "5%"] : ["0%", "10%"]);
+  const textY  = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "18%"] : ["0%", "40%"]);
+  const cardY  = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "15%"] : ["0%", "30%"]);
+  const shardY = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "30%"] : ["0%", "100%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.7], mobile ? [1, 0.2] : [1, 0]);
 
   const words1 = t.hero.title1.split(" ");
   const words2 = t.hero.title2.split(" ");
@@ -65,7 +80,7 @@ export const Hero = () => {
         ref={containerRef}
         id="top"
         className="relative grain aurora-bg overflow-hidden"
-        style={{ background: "var(--ink)", minHeight: "100svh" }}
+        style={{ background: "rgba(10, 10, 12, 0.7)", minHeight: "100svh" }}
       >
         {/* Tier 1 Depth: Ambient background line */}
         <motion.div
@@ -81,25 +96,24 @@ export const Hero = () => {
           />
         </motion.div>
 
-        <div className="container-xl relative z-10 pt-32 pb-20 sm:pb-16">
+        <div className="container-xl relative z-10 pt-28 sm:pt-32 pb-16 sm:pb-20">
           {/* Availability badge */}
           <motion.div
             style={{ y: shardY }}
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
-            className="flex items-center gap-2 mb-10 sm:mb-14"
+            className="flex items-center gap-2 mb-8 sm:mb-12"
           >
             <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ background: "var(--acid)" }} />
             <span className="label-sm text-acid">{t.hero.badge}</span>
           </motion.div>
 
-          {/* HERO LAYOUT: text left + portrait right */}
-          <div className="flex flex-col lg:flex-row lg:items-end gap-0">
-            {/* LEFT: Massive kinetic headline (10vw) */}
+          {/* HERO LAYOUT: Full width kinetic headline */}
+          <div className="relative">
             <motion.div
               style={{ y: textY, skewY, opacity }}
-              className="relative flex-1 lg:max-w-none z-10"
+              className="relative w-full z-10"
             >
               <h1
                 className="font-display font-black tracking-tighter leading-none text-cream"
@@ -129,10 +143,10 @@ export const Hero = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 1.2, duration: 0.8 }}
-                className="mt-8 sm:mt-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6 sm:gap-10 max-w-[720px]"
+                className="mt-8 sm:mt-12 flex flex-col sm:flex-row sm:items-end justify-between gap-6 sm:gap-10 max-w-[840px]"
               >
                 <p
-                  className="text-base sm:text-lg leading-relaxed max-w-[380px]"
+                  className="text-base sm:text-lg leading-relaxed max-w-[440px]"
                   style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}
                 >
                   {t.hero.subtitle}
@@ -146,48 +160,6 @@ export const Hero = () => {
                   </a>
                   <a href="#contact" className="btn-ghost">{t.hero.ctaContact}</a>
                 </div>
-              </motion.div>
-            </motion.div>
-
-            {/* RIGHT: Portrait with 70% depth parallax */}
-            <motion.div
-              initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
-              animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
-              transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-              style={{ y: portraitY }}
-              className="relative lg:absolute lg:right-0 lg:bottom-0 lg:w-[38%] xl:w-[34%] h-[360px] sm:h-[480px] lg:h-[90vh] mt-10 lg:mt-0 z-0"
-              data-cursor-view
-            >
-              <div className="relative w-full h-full overflow-hidden">
-                <img
-                  src="/jayesh-portrait.jpg"
-                  alt="Jayesh Mal — founder of Jimmzzz Developers"
-                  className="w-full h-full object-cover object-top"
-                  style={{ filter: "grayscale(20%) contrast(1.05)" }}
-                />
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    background: "linear-gradient(to top, var(--ink) 0%, transparent 40%)",
-                  }}
-                />
-                <div
-                  className="absolute inset-0 hidden lg:block"
-                  style={{
-                    background: "linear-gradient(to right, var(--ink) 0%, transparent 30%)",
-                  }}
-                />
-              </div>
-
-              {/* Floating meta tag */}
-              <motion.div
-                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1.4, duration: 0.6 }}
-                className="absolute bottom-16 left-4 sm:left-6 tag glass-slab"
-                style={{ color: "var(--text)" }}
-              >
-                <span className="w-1.5 h-1.5 rounded-full bg-acid" />
-                Available now
               </motion.div>
             </motion.div>
           </div>

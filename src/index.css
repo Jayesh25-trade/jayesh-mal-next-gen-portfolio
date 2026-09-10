@@ -47,6 +47,8 @@
     scroll-behavior: auto;
     -webkit-tap-highlight-color: transparent;
     font-size: 16px;
+    /* Account for fixed navbar height on anchor jumps */
+    scroll-padding-top: 72px;
   }
 
   body {
@@ -57,6 +59,8 @@
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
     line-height: 1.6;
+    /* Ensure proper touch scrolling on iOS */
+    -webkit-overflow-scrolling: touch;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -228,11 +232,32 @@
   .marquee-track { animation: marquee 35s linear infinite; }
   .marquee-track-rev { animation: marquee-rev 30s linear infinite; }
 
-  /* Desktop Cursor Hide */
-  @media (pointer: fine) {
+  /* Desktop-only cursor hide — only for non-touch pointer: fine devices */
+  @media (pointer: fine) and (hover: hover) {
     body, a, button,
     [data-cursor], [data-cursor-view] {
       cursor: none !important;
+    }
+  }
+
+  /* Mobile performance: reduce heavy backdrop-filter */
+  @media (max-width: 767px) {
+    .glass-slab {
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      background: rgba(22, 22, 22, 0.92);
+    }
+    .aurora-bg {
+      animation: none;
+    }
+  }
+
+  /* Respect reduced motion preference */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
     }
   }
 }

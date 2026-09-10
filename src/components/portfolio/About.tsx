@@ -101,6 +101,25 @@ export const About = () => {
               engineer modern web experiences end-to-end — from concept to production.
             </motion.p>
 
+            {/* Founder Developer Spotlight Paragraph */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-60px" }}
+              transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-8 pt-8 border-t border-cream-2 max-w-xl"
+            >
+              <div className="flex items-center gap-2 mb-3">
+                <span className="w-2 h-2 rounded-full" style={{ background: "var(--acid-dim)" }} />
+                <span className="label-sm uppercase font-bold text-xs" style={{ color: "var(--ink)" }}>
+                  About Jayesh Mal — Founder & Full-Stack Developer
+                </span>
+              </div>
+              <p className="text-base sm:text-lg leading-relaxed font-body" style={{ color: "var(--ink)" }}>
+                A passionate full-stack developer and digital architect dedicated to crafting ultra-fast, visually stunning web applications and scalable software systems. Combining cutting-edge frontend engineering with robust architecture, Jayesh transforms complex ideas into seamless, high-impact digital experiences built for performance and growth.
+              </p>
+            </motion.div>
+
             {/* Fact list — staggered */}
             <ul className="mt-8 sm:mt-10 space-y-0">
               {ABOUT_POINTS.map((pt, i) => (

@@ -387,7 +387,7 @@ export const VoiceAvatar = () => {
   const ui = getUIStrings(lang);
 
   return (
-    <div className="fixed bottom-6 right-6 z-[80] flex flex-col items-end gap-3 select-none">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-[80] flex flex-col items-end gap-3 select-none">
       {/* Expanded Subtitle & Player Card */}
       <AnimatePresence>
         {open && (
@@ -395,7 +395,7 @@ export const VoiceAvatar = () => {
             initial={{ opacity: 0, scale: 0.9, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.9, y: 15 }}
-            className="w-[310px] sm:w-[360px] glass-strong gradient-border rounded-3xl p-5 shadow-2xl flex flex-col gap-4 mb-2"
+            className="w-[280px] xs:w-[310px] sm:w-[340px] glass-strong gradient-border rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col gap-3 sm:gap-4 mb-2"
           >
             {/* Header */}
             <div className="flex items-center justify-between border-b border-white/5 pb-2.5">
@@ -466,14 +466,14 @@ export const VoiceAvatar = () => {
         )}
       </AnimatePresence>
 
-      {/* Floating Greeting Tooltip */}
+      {/* Floating Greeting Tooltip — desktop only */}
       <AnimatePresence>
         {showTooltip && (
           <motion.div
             initial={{ opacity: 0, x: 10, scale: 0.95 }}
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 10, scale: 0.95 }}
-            className="absolute bottom-24 right-2 w-[240px] glass-strong border border-white/10 rounded-2xl p-3 shadow-xl text-xs leading-relaxed flex flex-col gap-2 cursor-pointer"
+            className="absolute bottom-24 right-2 w-[220px] sm:w-[240px] glass-strong border border-white/10 rounded-2xl p-3 shadow-xl text-xs leading-relaxed flex-col gap-2 cursor-pointer hidden sm:flex"
             onClick={toggleOpen}
           >
             <div className="font-semibold text-neon-cyan flex items-center gap-1.5">
@@ -490,15 +490,15 @@ export const VoiceAvatar = () => {
       {/* Avatar Button */}
       <button
         onClick={toggleOpen}
-        className="group relative w-16 h-16 rounded-full flex items-center justify-center transition-transform active:scale-[0.93] focus:outline-none"
+        className="group relative w-12 h-12 sm:w-14 sm:h-14 rounded-full flex items-center justify-center transition-transform active:scale-[0.93] focus:outline-none"
         aria-label="Open AI Voice Introduction"
       >
         {/* Canvas Visualizer Background */}
         <canvas
           ref={canvasRef}
-          width={112}
-          height={112}
-          className="absolute w-28 h-28 pointer-events-none z-0"
+          width={96}
+          height={96}
+          className="absolute w-24 h-24 sm:w-28 sm:h-28 pointer-events-none z-0"
         />
 
         {/* Visual Pulse for Idle/Unplayed State */}
@@ -510,7 +510,7 @@ export const VoiceAvatar = () => {
         <div className="absolute inset-0 rounded-full border border-white/20 z-20 group-hover:border-neon-cyan/40 transition-colors" />
 
         {/* Avatar Image */}
-        <div className="relative w-14 h-14 rounded-full overflow-hidden border border-white/10 bg-background/50 backdrop-blur z-10">
+        <div className="relative w-10 h-10 sm:w-12 sm:h-12 rounded-full overflow-hidden border border-white/10 bg-background/50 backdrop-blur z-10">
           <img
             src={avatarImg}
             alt="Jimmzzz Developers AI Assistant Avatar"

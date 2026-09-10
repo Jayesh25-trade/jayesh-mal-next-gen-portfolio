@@ -1,23 +1,154 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { CheckCircle2, ShieldCheck, Cpu, Rocket, ArrowRight } from "lucide-react";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const STEPS = [
-  { num: "01", title: "Discover", desc: "We align on goals, audience and success metrics. Quick and focused." },
-  { num: "02", title: "Design", desc: "Wireframes → high-fidelity, animated prototype. You see it before we build." },
-  { num: "03", title: "Build", desc: "Production-grade code with tests, CI/CD, and zero technical debt." },
-  { num: "04", title: "Launch", desc: "Deploy on Vercel, monitor performance, iterate based on real data." },
+  {
+    num: "01",
+    phase: "PHASE 01",
+    title: "Discovery & Architecture",
+    desc: "Deep technical alignment on business goals, target audience requirements, system architecture, and core performance SLAs.",
+    deliverables: ["Architecture Blueprint", "Technical Specification", "SLA & Metric Targets"],
+    metric: "100% Scope Clarity",
+    icon: Cpu,
+  },
+  {
+    num: "02",
+    phase: "PHASE 02",
+    title: "Product Design & Prototyping",
+    desc: "Precision UI/UX engineering, scalable design tokens, micro-interactions, and high-fidelity clickable interactive prototypes.",
+    deliverables: ["Design System Core", "Interactive Prototype", "Accessibility Standards"],
+    metric: "60fps Motion UX",
+    icon: ShieldCheck,
+  },
+  {
+    num: "03",
+    phase: "PHASE 03",
+    title: "Full-Stack Development & QA",
+    desc: "Production-grade engineering built with clean architecture, CI/CD automation, API security audits, and comprehensive E2E test suites.",
+    deliverables: ["Clean Codebase", "Automated E2E Suite", "Security & API Audits"],
+    metric: "Zero Technical Debt",
+    icon: CheckCircle2,
+  },
+  {
+    num: "04",
+    phase: "PHASE 04",
+    title: "Enterprise Deployment & Telemetry",
+    desc: "Global edge CDN deployment, real-time automated crash monitoring, operational telemetry, and continuous performance tuning.",
+    deliverables: ["Edge CDN Deployment", "24/7 Monitoring", "Performance Analytics"],
+    metric: "High Availability SLA",
+    icon: Rocket,
+  },
 ];
 
-export const Process = () => {
+/* ── Mobile vertical layout ─────────────────────────────── */
+const MobileProcess = () => {
+  const ref = useRef<HTMLElement>(null);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+  return (
+    <section
+      ref={ref}
+      id="process"
+      className="grain aurora-bg relative overflow-hidden"
+      style={{ background: "var(--ink-2)", padding: "70px 0" }}
+    >
+      <div className="container-xl">
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="w-2 h-2 rounded-full bg-acid" />
+            <span className="label-sm text-acid uppercase tracking-widest text-xs">06 — ENGINEERING METHODOLOGY</span>
+          </div>
+          <h2
+            className="font-display font-black tracking-tighter text-text uppercase"
+            style={{ fontSize: "var(--h-section)", lineHeight: 1 }}
+          >
+            How we work
+          </h2>
+          <p className="mt-3 text-sm text-muted max-w-lg font-body leading-relaxed">
+            A battle-tested 4-phase engineering framework designed for scalable infrastructure, flawless user experience, and rapid execution.
+          </p>
+        </div>
+
+        <div className="rule bg-wire mb-8" />
+
+        <div className="flex flex-col gap-6">
+          {STEPS.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <motion.div
+                key={s.num}
+                initial={{ opacity: 0, y: 24 }}
+                animate={inView ? { opacity: 1, y: 0 } : {}}
+                transition={{ delay: i * 0.12, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                className="p-6 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-md relative overflow-hidden group"
+              >
+                <div className="flex items-center justify-between mb-4">
+                  <span className="text-[11px] font-mono tracking-widest text-acid uppercase font-semibold">
+                    {s.phase}
+                  </span>
+                  <span
+                    className="font-display font-black text-2xl"
+                    style={{ color: i === 0 ? "var(--acid)" : "var(--wire-2)" }}
+                  >
+                    {s.num}
+                  </span>
+                </div>
+
+                <h3
+                  className="font-display font-bold tracking-tight text-text mb-2 flex items-center gap-2"
+                  style={{ fontSize: "clamp(20px, 4.5vw, 28px)", lineHeight: 1.2 }}
+                >
+                  <Icon className="w-5 h-5 text-acid shrink-0" />
+                  {s.title}
+                </h3>
+
+                <p className="text-sm leading-relaxed font-body text-muted mb-4">
+                  {s.desc}
+                </p>
+
+                {/* Deliverables tags */}
+                <div className="pt-3 border-t border-white/10 flex flex-wrap gap-1.5">
+                  {s.deliverables.map((item) => (
+                    <span
+                      key={item}
+                      className="px-2.5 py-1 rounded-md text-[11px] font-mono bg-white/[0.04] text-cream border border-white/10"
+                    >
+                      ✓ {item}
+                    </span>
+                  ))}
+                </div>
+              </motion.div>
+            );
+          })}
+
+          <div className="pt-6 text-center">
+            <div className="p-6 rounded-2xl border border-acid/30 bg-acid/5 backdrop-blur-md">
+              <span className="font-display font-black text-cream block text-xl tracking-tight mb-2">
+                Production-Grade Delivery
+              </span>
+              <p className="text-xs text-muted leading-relaxed font-body max-w-xs mx-auto mb-4">
+                Enterprise software engineered with speed, security, and precision.
+              </p>
+              <a href="#contact" className="btn-primary text-xs py-2 px-4 inline-flex items-center justify-center gap-2">
+                Initiate Project <ArrowRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+};
+
+/* ── Desktop horizontal pin layout ──────────────────────── */
+const DesktopProcess = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const pathRef = useRef<SVGPathElement>(null);
-  const titleRef = useRef<HTMLDivElement>(null);
-  const inView = useInView(sectionRef, { once: true, margin: "-100px" });
 
   useEffect(() => {
     const track = trackRef.current;
@@ -28,7 +159,6 @@ export const Process = () => {
     const totalScroll = track.scrollWidth - window.innerWidth;
 
     const ctx = gsap.context(() => {
-      // Pin and horizontal scroll
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -40,12 +170,8 @@ export const Process = () => {
         },
       });
 
-      tl.to(track, {
-        x: -totalScroll,
-        ease: "none",
-      });
+      tl.to(track, { x: -totalScroll, ease: "none" });
 
-      // SVG path drawing synced to scroll progress
       if (path) {
         const pathLength = path.getTotalLength();
         gsap.set(path, { strokeDasharray: pathLength, strokeDashoffset: pathLength });
@@ -72,10 +198,8 @@ export const Process = () => {
       className="grain aurora-bg overflow-hidden"
       style={{ background: "var(--ink-2)" }}
     >
-      {/* Sticky pinned container */}
-      <div className="h-screen flex flex-col justify-center relative" style={{ paddingBlock: "6vh" }}>
-        {/* Animated SVG Path Line */}
-        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-10 hidden md:block">
+      <div className="h-screen flex flex-col justify-center relative" style={{ paddingBlock: "5vh" }}>
+        <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 pointer-events-none z-10">
           <svg className="w-full h-24 overflow-visible" viewBox="0 0 1440 100" fill="none" preserveAspectRatio="none">
             <path
               ref={pathRef}
@@ -88,10 +212,12 @@ export const Process = () => {
           </svg>
         </div>
 
-        {/* Section header */}
-        <div ref={titleRef} className="container-xl mb-10 flex items-end justify-between relative z-20">
+        <div className="container-xl mb-6 flex items-end justify-between relative z-20">
           <div>
-            <span className="label-sm text-acid block mb-3">06 — ANIMATED JOURNEY</span>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2 h-2 rounded-full bg-acid" />
+              <span className="label-sm text-acid block uppercase tracking-widest text-xs">06 — ENGINEERING METHODOLOGY</span>
+            </div>
             <h2
               className="font-display font-black tracking-tighter text-text uppercase"
               style={{ fontSize: "var(--h-section)", lineHeight: 1 }}
@@ -99,74 +225,100 @@ export const Process = () => {
               How we work
             </h2>
           </div>
-          <span className="label-sm text-muted hidden sm:block">
-            ← Scroll to explore path
-          </span>
+          <div className="text-right hidden sm:block">
+            <span className="label-sm text-muted block mb-1">PROVEN 4-PHASE DELIVERY FRAMEWORK</span>
+            <span className="label-sm text-acid">← Scroll horizontally to explore</span>
+          </div>
         </div>
 
-        <div className="rule bg-wire relative z-20" />
+        <div className="rule bg-wire relative z-20 mb-4" />
 
-        {/* Horizontal track */}
-        <div ref={trackRef} className="flex items-stretch gap-0 relative z-20" style={{ width: "max-content", paddingLeft: "var(--gutter)" }}>
-          {STEPS.map((s, i) => (
-            <motion.div
-              key={s.num}
-              whileHover={{ y: -6 }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="flex flex-col justify-between shrink-0 py-10 pr-16 sm:pr-24 xl:pr-32 border-r border-wire relative group"
-              style={{
-                width: "clamp(280px, 36vw, 520px)",
-              }}
-            >
-              {/* Milestone Node */}
-              <div className="absolute top-1/2 -translate-y-1/2 -left-3 w-6 h-6 rounded-full bg-ink border-2 border-acid flex items-center justify-center shadow-[0_0_12px_#dfff00] group-hover:scale-125 transition-transform z-30 hidden md:flex">
-                <span className="w-2 h-2 rounded-full bg-acid" />
-              </div>
-
-              {/* Step number — oversized background type */}
-              <div className="relative">
-                <span
-                  className="font-display font-black select-none transition-colors duration-500"
-                  style={{
-                    fontSize: "clamp(80px, 14vw, 180px)",
-                    color: i === 0 ? "var(--acid)" : "var(--wire-2)",
-                    lineHeight: 1,
-                    letterSpacing: "-0.06em",
-                    opacity: i === 0 ? 1 : 0.4,
-                  }}
-                  aria-hidden
-                >
-                  {s.num}
-                </span>
-              </div>
-
-              <div className="mt-6">
-                <div className="rule mb-5 bg-wire" />
-                <h3
-                  className="font-display font-bold tracking-tighter text-text group-hover:text-acid transition-colors"
-                  style={{ fontSize: "clamp(22px, 3vw, 40px)", lineHeight: 1.1 }}
-                >
-                  {s.title}
-                </h3>
-                <p
-                  className="mt-3 text-sm sm:text-base leading-relaxed text-muted font-body max-w-[300px]"
-                >
-                  {s.desc}
-                </p>
-              </div>
-            </motion.div>
-          ))}
-
-          {/* End card */}
-          <div className="shrink-0 flex items-center justify-center px-14 sm:px-20">
-            <div className="text-center">
-              <span
-                className="font-display font-black text-acid block"
-                style={{ fontSize: "clamp(28px, 5vw, 60px)" }}
+        <div ref={trackRef} className="flex items-stretch gap-8 relative z-20" style={{ width: "max-content", paddingLeft: "var(--gutter)" }}>
+          {STEPS.map((s, i) => {
+            const Icon = s.icon;
+            return (
+              <motion.div
+                key={s.num}
+                whileHover={{ y: -8 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                className="flex flex-col justify-between shrink-0 p-8 sm:p-10 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl relative group shadow-2xl"
+                style={{ width: "clamp(340px, 32vw, 480px)" }}
               >
-                Ship.
+                {/* Node indicator dot */}
+                <div className="absolute top-1/2 -translate-y-1/2 -left-4 w-7 h-7 rounded-full bg-ink border-2 border-acid flex items-center justify-center shadow-[0_0_15px_#dfff00] group-hover:scale-125 transition-transform z-30">
+                  <span className="w-2.5 h-2.5 rounded-full bg-acid" />
+                </div>
+
+                {/* Top header line */}
+                <div>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-[11px] font-mono tracking-widest text-acid uppercase font-semibold">
+                      {s.phase}
+                    </span>
+                    <span
+                      className="font-display font-black select-none text-4xl"
+                      style={{
+                        color: i === 0 ? "var(--acid)" : "var(--wire-2)",
+                        opacity: i === 0 ? 1 : 0.6,
+                      }}
+                      aria-hidden
+                    >
+                      {s.num}
+                    </span>
+                  </div>
+
+                  <h3
+                    className="font-display font-bold tracking-tight text-text group-hover:text-acid transition-colors flex items-center gap-3"
+                    style={{ fontSize: "clamp(22px, 2.2vw, 32px)", lineHeight: 1.1 }}
+                  >
+                    <Icon className="w-6 h-6 text-acid shrink-0" />
+                    {s.title}
+                  </h3>
+
+                  <p className="mt-4 text-sm leading-relaxed text-muted font-body">
+                    {s.desc}
+                  </p>
+                </div>
+
+                {/* Bottom deliverables */}
+                <div className="mt-8 pt-6 border-t border-white/10">
+                  <span className="text-[10px] font-mono uppercase text-muted tracking-wider block mb-2 font-semibold">
+                    Key Deliverables
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {s.deliverables.map((item) => (
+                      <span
+                        key={item}
+                        className="px-2.5 py-1 rounded-md text-[11px] font-mono bg-white/[0.04] text-cream border border-white/10"
+                      >
+                        ✓ {item}
+                      </span>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex items-center justify-between text-xs text-acid font-mono">
+                    <span>Target Metric:</span>
+                    <span className="font-semibold text-cream">{s.metric}</span>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+
+          {/* End Card — Enterprise Guarantee */}
+          <div className="shrink-0 flex items-center justify-center px-8 sm:px-12">
+            <div className="p-8 rounded-2xl border border-acid/30 bg-acid/5 backdrop-blur-xl max-w-[320px] text-center shadow-2xl">
+              <div className="w-12 h-12 rounded-full border border-acid/40 bg-acid/10 flex items-center justify-center text-acid mx-auto mb-4">
+                <Rocket className="w-6 h-6" />
+              </div>
+              <span className="font-display font-black text-cream block text-2xl tracking-tight mb-2">
+                Production-Ready Execution
               </span>
-              <p className="mt-2 label-sm text-muted">That's it.</p>
+              <p className="text-xs text-muted leading-relaxed font-body mb-6">
+                Engineered with precision, security, and zero technical debt. Battle-tested for enterprise performance.
+              </p>
+              <a href="#contact" className="btn-primary text-xs py-3 px-6 inline-flex items-center justify-center gap-2 w-full">
+                Initiate Project <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
           </div>
         </div>
@@ -174,3 +326,18 @@ export const Process = () => {
     </section>
   );
 };
+
+/* ── Responsive wrapper ──────────────────────────────────── */
+export const Process = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
+
+  return isMobile ? <MobileProcess /> : <DesktopProcess />;
+};
+

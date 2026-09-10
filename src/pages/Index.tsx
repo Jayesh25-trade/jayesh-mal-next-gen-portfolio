@@ -4,6 +4,7 @@ import { Scene } from "@/components/webgl/Scene";
 import { MagneticCursor } from "@/components/cursor/MagneticCursor";
 import { Navbar } from "@/components/portfolio/Navbar";
 import { Hero } from "@/components/portfolio/Hero";
+import { KineticPillars } from "@/components/portfolio/KineticPillars";
 import { Stats } from "@/components/portfolio/Stats";
 import { About } from "@/components/portfolio/About";
 import { Values } from "@/components/portfolio/Values";
@@ -17,7 +18,6 @@ import { FAQ } from "@/components/portfolio/FAQ";
 import { Contact } from "@/components/portfolio/Contact";
 import { Footer } from "@/components/portfolio/Footer";
 import { LanguageModal } from "@/components/portfolio/LanguageModal";
-import { VoiceAvatar } from "@/components/portfolio/VoiceAvatar";
 
 const Index = () => {
   return (
@@ -28,6 +28,9 @@ const Index = () => {
 
         {/* Morphing custom cursor (desktop only) */}
         <MagneticCursor />
+
+        {/* Counter-scrolling Kinetic Typography Pillars & Mobile Progress Bar */}
+        <KineticPillars />
 
         {/* All content sits above the WebGL canvas via z-index */}
         <main className="relative min-h-screen" style={{ zIndex: 1 }}>
@@ -46,7 +49,6 @@ const Index = () => {
           <Contact />
           <Footer />
           <LanguageModal />
-          <VoiceAvatar />
         </main>
       </LenisProvider>
     </I18nProvider>

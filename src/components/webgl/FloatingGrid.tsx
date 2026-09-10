@@ -48,7 +48,7 @@ export const FloatingGrid = ({ scrollProgress }: FloatingGridProps) => {
       
       // Fade from center + edge vignette
       float dist = length(vUv - 0.5) * 2.0;
-      float alpha = gridMask * (1.0 - smoothstep(0.5, 1.0, dist)) * 0.35;
+      float alpha = gridMask * (1.0 - smoothstep(0.4, 1.2, dist)) * 0.55;
       
       gl_FragColor = vec4(color, alpha);
     }
@@ -62,7 +62,7 @@ export const FloatingGrid = ({ scrollProgress }: FloatingGridProps) => {
   useFrame(({ clock }) => {
     if (meshRef.current) {
       meshRef.current.rotation.x = -Math.PI * 0.35 + scrollProgress.current * 0.2;
-      meshRef.current.position.y = -3 + scrollProgress.current * -2;
+      meshRef.current.position.y = -1.5 + scrollProgress.current * -3.5;
     }
     if (materialRef.current) {
       materialRef.current.uniforms.uTime.value = clock.getElapsedTime();
@@ -71,7 +71,7 @@ export const FloatingGrid = ({ scrollProgress }: FloatingGridProps) => {
   });
 
   return (
-    <mesh ref={meshRef} rotation={[-Math.PI * 0.35, 0, 0]} position={[0, -3, -2]}>
+    <mesh ref={meshRef} rotation={[-Math.PI * 0.35, 0, 0]} position={[0, -1.5, -2]}>
       <planeGeometry args={[30, 30, 40, 40]} />
       <shaderMaterial
         ref={materialRef}
