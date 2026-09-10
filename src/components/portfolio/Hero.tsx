@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform, useVelocity, useSpring } from "framer-motion";
 import { ArrowDownRight } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
 
@@ -41,15 +41,22 @@ const CurtainWord = ({ word, delay = 0 }: { word: string; delay?: number }) => (
 export const Hero = () => {
   const { t } = useI18n();
   const containerRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
+  const { scrollYProgress, scrollY } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
 
-  const portraitY = useTransform(scrollYProgress, [0, 1], ["0%", "18%"]);
-  const textY     = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
-  const opacity   = useTransform(scrollYProgress, [0, 0.55], [1, 0]);
+  // Scroll Velocity tracking for kinetic skew
+  const scrollVelocity = useVelocity(scrollY);
+  const rawSkew = useTransform(scrollVelocity, [-2000, 2000], [-3, 3]);
+  const skewY = useSpring(rawSkew, { stiffness: 300, damping: 30 });
+
+  // 4-tier z-space depth parallax
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "40%"]);
+  const portraitY = useTransform(scrollYProgress, [0, 1], ["0%", "70%"]);
+  const shardY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+  const opacity = useTransform(scrollYProgress, [0, 0.6], [1, 0]);
 
   const words1 = t.hero.title1.split(" ");
   const words2 = t.hero.title2.split(" ");
-  const allWords = [...words1, ...words2];
 
   return (
     <>
@@ -57,37 +64,42 @@ export const Hero = () => {
       <section
         ref={containerRef}
         id="top"
-        className="relative grain overflow-hidden"
+        className="relative grain aurora-bg overflow-hidden"
         style={{ background: "var(--ink)", minHeight: "100svh" }}
       >
-        {/* ─── Accent line top-left ─── */}
+        {/* Tier 1 Depth: Ambient background line */}
         <motion.div
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ delay: 1.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-          className="absolute top-0 left-0 h-[1px] w-[40%] origin-left"
-          style={{ background: "var(--acid)", opacity: 0.7 }}
-        />
+          style={{ y: bgY }}
+          className="absolute top-0 left-0 h-[1px] w-[40%] origin-left z-0"
+        >
+          <motion.div
+            initial={{ scaleX: 0 }}
+            animate={{ scaleX: 1 }}
+            transition={{ delay: 1.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
+            className="w-full h-full"
+            style={{ background: "var(--acid)", opacity: 0.7 }}
+          />
+        </motion.div>
 
         <div className="container-xl relative z-10 pt-32 pb-20 sm:pb-16">
-          {/* ─── Availability badge — top left ─── */}
+          {/* Availability badge */}
           <motion.div
+            style={{ y: shardY }}
             initial={{ opacity: 0, x: -16 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.2, duration: 0.6 }}
             className="flex items-center gap-2 mb-10 sm:mb-14"
           >
-            <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--acid)" }} />
-            <span className="label-sm">{t.hero.badge}</span>
+            <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ background: "var(--acid)" }} />
+            <span className="label-sm text-acid">{t.hero.badge}</span>
           </motion.div>
 
-          {/* ─── HERO LAYOUT: text left + portrait right ─── */}
+          {/* HERO LAYOUT: text left + portrait right */}
           <div className="flex flex-col lg:flex-row lg:items-end gap-0">
-
-            {/* LEFT: Massive headline (10vw) — left-aligned, breaks grid right edge */}
+            {/* LEFT: Massive kinetic headline (10vw) */}
             <motion.div
-              style={{ y: textY, opacity }}
-              className="relative flex-1 lg:max-w-none"
+              style={{ y: textY, skewY, opacity }}
+              className="relative flex-1 lg:max-w-none z-10"
             >
               <h1
                 className="font-display font-black tracking-tighter leading-none text-cream"
@@ -112,7 +124,7 @@ export const Hero = () => {
                 </span>
               </h1>
 
-              {/* ─── Descriptor strip below headline ─── */}
+              {/* Descriptor strip below headline */}
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -126,7 +138,7 @@ export const Hero = () => {
                   {t.hero.subtitle}
                 </p>
 
-                {/* CTA — placed right of subtitle, not centered below headline */}
+                {/* CTA buttons */}
                 <div className="flex items-center gap-3 shrink-0">
                   <a href="#work" className="btn-primary">
                     {t.hero.ctaWork}
@@ -137,16 +149,15 @@ export const Hero = () => {
               </motion.div>
             </motion.div>
 
-            {/* RIGHT: Portrait — tall, crops on left edge, parallaxes up */}
+            {/* RIGHT: Portrait with 70% depth parallax */}
             <motion.div
               initial={{ opacity: 0, clipPath: "inset(0 0 100% 0)" }}
               animate={{ opacity: 1, clipPath: "inset(0 0 0% 0)" }}
               transition={{ delay: 0.6, duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
               style={{ y: portraitY }}
-              className="relative lg:absolute lg:right-0 lg:bottom-0 lg:w-[38%] xl:w-[34%] h-[360px] sm:h-[480px] lg:h-[90vh] mt-10 lg:mt-0"
+              className="relative lg:absolute lg:right-0 lg:bottom-0 lg:w-[38%] xl:w-[34%] h-[360px] sm:h-[480px] lg:h-[90vh] mt-10 lg:mt-0 z-0"
               data-cursor-view
             >
-              {/* Duotone-treated portrait */}
               <div className="relative w-full h-full overflow-hidden">
                 <img
                   src="/jayesh-portrait.jpg"
@@ -154,14 +165,12 @@ export const Hero = () => {
                   className="w-full h-full object-cover object-top"
                   style={{ filter: "grayscale(20%) contrast(1.05)" }}
                 />
-                {/* Bottom gradient fade into background */}
                 <div
                   className="absolute inset-0"
                   style={{
                     background: "linear-gradient(to top, var(--ink) 0%, transparent 40%)",
                   }}
                 />
-                {/* Left edge fade */}
                 <div
                   className="absolute inset-0 hidden lg:block"
                   style={{
@@ -170,26 +179,26 @@ export const Hero = () => {
                 />
               </div>
 
-              {/* Floating meta tags on portrait */}
+              {/* Floating meta tag */}
               <motion.div
                 initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 1.4, duration: 0.6 }}
-                className="absolute bottom-16 left-4 sm:left-6 tag"
-                style={{ background: "var(--ink-2)", borderColor: "var(--wire-2)", color: "var(--text)" }}
+                className="absolute bottom-16 left-4 sm:left-6 tag glass-slab"
+                style={{ color: "var(--text)" }}
               >
-                <span className="w-1.5 h-1.5 rounded-full" style={{ background: "var(--acid)" }} />
+                <span className="w-1.5 h-1.5 rounded-full bg-acid" />
                 Available now
               </motion.div>
             </motion.div>
           </div>
         </div>
 
-        {/* ─── Bottom strip: stats preview ─── */}
+        {/* Bottom strip: stats preview */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5, duration: 0.8 }}
-          className="container-xl pb-8 lg:pb-10"
+          className="container-xl pb-8 lg:pb-10 z-10 relative"
           style={{ borderTop: "1px solid var(--wire)" }}
         >
           <div className="flex items-center gap-8 sm:gap-14 pt-6 overflow-x-auto">
@@ -200,8 +209,8 @@ export const Hero = () => {
               { n: "99%", l: "Client retention" },
             ].map(({ n, l }) => (
               <div key={l} className="shrink-0">
-                <span className="font-display font-black text-2xl sm:text-3xl" style={{ color: "var(--acid)" }}>{n}</span>
-                <span className="ml-2 text-xs sm:text-sm" style={{ color: "var(--muted)", fontFamily: "var(--font-body)" }}>{l}</span>
+                <span className="font-display font-black text-2xl sm:text-3xl text-acid">{n}</span>
+                <span className="ml-2 text-xs sm:text-sm text-muted font-body">{l}</span>
               </div>
             ))}
           </div>
@@ -212,14 +221,13 @@ export const Hero = () => {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 2, duration: 1 }}
-          className="absolute bottom-6 right-6 sm:right-10 flex flex-col items-end gap-1"
+          className="absolute bottom-6 right-6 sm:right-10 flex flex-col items-end gap-1 z-10"
         >
           <span className="label-sm">Scroll</span>
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ repeat: Infinity, duration: 1.4, ease: "easeInOut" }}
-            className="w-[1px] h-8 self-center"
-            style={{ background: "var(--wire-2)" }}
+            className="w-[1px] h-8 self-center bg-wire-2"
           />
         </motion.div>
       </section>
