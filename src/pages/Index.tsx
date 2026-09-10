@@ -2,7 +2,6 @@ import { I18nProvider } from "@/i18n/I18nProvider";
 import { LenisProvider } from "@/components/smooth-scroll/LenisProvider";
 import { Scene } from "@/components/webgl/Scene";
 import { MagneticCursor } from "@/components/cursor/MagneticCursor";
-import { SpiderMascotEngine } from "@/components/portfolio/SpiderMascotEngine";
 import { Navbar } from "@/components/portfolio/Navbar";
 import { Hero } from "@/components/portfolio/Hero";
 import { KineticPillars } from "@/components/portfolio/KineticPillars";
@@ -32,9 +31,6 @@ const Index = () => {
 
         {/* Counter-scrolling Kinetic Typography Pillars & Mobile Progress Bar */}
         <KineticPillars />
-
-        {/* Unified Scroll-Driven Spider-Mascot Engine */}
-        <SpiderMascotEngine />
 
         {/* All content sits above the WebGL canvas via z-index */}
         <main className="relative min-h-screen" style={{ zIndex: 1 }}>
