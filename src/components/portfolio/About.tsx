@@ -1,5 +1,79 @@
-import { useRef } from "react";
+import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
+
+const CIPHER_CHARS = "010101XYZ#%@!$*[]{}<>/\\&+=ØÆ";
+
+const MatrixDecodeText = () => {
+  const containerRef = useRef<HTMLParagraphElement>(null);
+  const isInView = useInView(containerRef, { once: true, margin: "-60px" });
+  const [displayText, setDisplayText] = useState<string>("");
+  const [isDecoded, setIsDecoded] = useState(false);
+
+  const fullText = "We are Jimmzzz Developers — a next-gen web development agency building products people love.";
+
+  const triggerDecode = () => {
+    setIsDecoded(false);
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(
+        fullText
+          .split("")
+          .map((char, index) => {
+            if (char === " ") return " ";
+            if (index < iteration) return fullText[index];
+            return CIPHER_CHARS[Math.floor(Math.random() * CIPHER_CHARS.length)];
+          })
+          .join("")
+      );
+
+      if (iteration >= fullText.length) {
+        clearInterval(interval);
+        setDisplayText(fullText);
+        setIsDecoded(true);
+      }
+      iteration += 1.8;
+    }, 25);
+  };
+
+  useEffect(() => {
+    if (isInView) {
+      triggerDecode();
+    }
+  }, [isInView]);
+
+  const renderText = () => {
+    if (!isDecoded && displayText) {
+      return (
+        <span className="font-mono text-acid-dim tracking-wider font-semibold">
+          {displayText}
+        </span>
+      );
+    }
+
+    return (
+      <>
+        We are{" "}
+        <span className="inline-block relative group/brand cursor-pointer" onClick={triggerDecode} title="Click to re-trigger matrix decode">
+          <span className="relative z-10 px-2.5 py-1 rounded bg-ink text-acid font-black shadow-lg transition-transform duration-300 inline-block hover:scale-105">
+            Jimmzzz Developers
+          </span>
+          <span className="absolute -bottom-1 left-0 w-full h-[3px] bg-acid rounded-full transition-all duration-300 group-hover/brand:h-full group-hover/brand:opacity-20" />
+        </span>
+        {" "}— a next-gen web development agency building products people love.
+      </>
+    );
+  };
+
+  return (
+    <p
+      ref={containerRef}
+      className="font-display font-bold leading-tight tracking-tighter transition-all"
+      style={{ fontSize: "clamp(26px, 3.5vw, 48px)", color: "var(--ink)" }}
+    >
+      {renderText()}
+    </p>
+  );
+};
 
 /* Curtain reveal used for the pull-quote */
 const Curtain = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => {
@@ -29,7 +103,6 @@ export const About = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
   const lineScale = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
-  const imgY = useTransform(scrollYProgress, [0, 1], ["-6%", "6%"]);
 
   return (
     <section
@@ -75,16 +148,8 @@ export const About = () => {
 
           {/* RIGHT wide: content */}
           <div>
-            {/* Pull-quote in oversized Syne */}
             <Curtain delay={0.1}>
-              <p
-                className="font-display font-bold leading-tight tracking-tighter"
-                style={{ fontSize: "clamp(26px, 3.5vw, 48px)", color: "var(--ink)" }}
-              >
-                We are{" "}
-                <em className="not-italic" style={{ color: "inherit" }}>Jimmzzz Developers</em>
-                {" "}— a next-gen web development agency building products people love.
-              </p>
+              <MatrixDecodeText />
             </Curtain>
 
             {/* Body text */}
