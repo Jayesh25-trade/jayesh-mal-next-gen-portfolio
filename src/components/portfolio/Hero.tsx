@@ -32,12 +32,12 @@ const EditorialCursor = () => {
 
 /* Clip-path curtain reveal per word */
 const CurtainWord = ({ word, delay = 0 }: { word: string; delay?: number }) => (
-  <span className="inline-block overflow-hidden leading-none">
+  <span className="inline-block overflow-hidden leading-none max-w-full">
     <motion.span
-      className="inline-block"
-      initial={{ y: "110%" }}
+      className="inline-block max-w-full break-words"
+      initial={{ y: "105%" }}
       animate={{ y: "0%" }}
-      transition={{ delay, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ delay, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
     >
       {word}
     </motion.span>

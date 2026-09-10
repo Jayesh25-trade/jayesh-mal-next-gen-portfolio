@@ -29,9 +29,9 @@
     --font-body:    'DM Sans', system-ui, sans-serif;
 
     /* Headline scale */
-    --h-hero:    clamp(52px, 10vw, 148px);
-    --h-section: clamp(36px, 5vw, 72px);
-    --h-card:    clamp(20px, 2.5vw, 32px);
+    --h-hero:    clamp(32px, 8vw, 148px);
+    --h-section: clamp(32px, 5vw, 72px);
+    --h-card:    clamp(18px, 2.5vw, 32px);
 
     /* Spacing */
     --gutter: clamp(24px, 4vw, 80px);
