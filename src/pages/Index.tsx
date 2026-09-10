@@ -18,7 +18,6 @@ import { FAQ } from "@/components/portfolio/FAQ";
 import { Contact } from "@/components/portfolio/Contact";
 import { Footer } from "@/components/portfolio/Footer";
 import { LanguageModal } from "@/components/portfolio/LanguageModal";
-import { InteractiveRopeMascot } from "@/components/mascot/InteractiveRopeMascot";
 
 const Index = () => {
   return (
@@ -32,9 +31,6 @@ const Index = () => {
 
         {/* Counter-scrolling Kinetic Typography Pillars & Mobile Progress Bar */}
         <KineticPillars />
-
-        {/* Interactive SVG Physics Rope & Vector Spider-Mascot Engine */}
-        <InteractiveRopeMascot />
 
         {/* All content sits above the WebGL canvas via z-index */}
         <main className="relative min-h-screen" style={{ zIndex: 1 }}>
