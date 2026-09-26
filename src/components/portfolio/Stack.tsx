@@ -1,8 +1,9 @@
 import { useRef } from "react";
 import { useI18n } from "@/i18n/I18nProvider";
 import { motion } from "framer-motion";
+import { useIsDeck } from "@/hooks/use-deck";
 
-const STACK = [
+export const STACK = [
   "React", "Next.js", "TypeScript", "Tailwind CSS", "Framer Motion",
   "Node.js", "Express", "PostgreSQL", "MongoDB", "Supabase",
   "Vite", "Vercel", "Stripe", "Figma", "Git", "GSAP",
@@ -41,6 +42,10 @@ const MarqueeRow = ({ items, reversed }: { items: string[]; reversed?: boolean }
 
 export const Stack = () => {
   const { t } = useI18n();
+  const isDeck = useIsDeck();
+
+  // On phones the stack lives inside the capabilities slide
+  if (isDeck) return null;
 
   return (
     <section

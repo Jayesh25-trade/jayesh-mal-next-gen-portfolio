@@ -2,10 +2,18 @@ import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useVelocity, useSpring } from "framer-motion";
 import { ArrowDownRight, Mail, Phone, MapPin, Award, CheckCircle2, Terminal } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useDeckChapter } from "@/components/deck/DeckSlide";
 
 const isTouchDevice = () =>
   typeof window !== "undefined" &&
   ("ontouchstart" in window || navigator.maxTouchPoints > 0);
+
+const HERO_STATS = [
+  { n: "20+", l: "Projects shipped" },
+  { n: "15+", l: "Happy clients" },
+  { n: "3+", l: "Years" },
+  { n: "99%", l: "Client retention" },
+];
 
 /* Custom minimal cursor that follows mouse — desktop only */
 const EditorialCursor = () => {
@@ -44,8 +52,110 @@ const CurtainWord = ({ word, delay = 0 }: { word: string; delay?: number }) => (
   </span>
 );
 
+/* ── PHONE DECK: one deliberate screen, no dead air ──────────── */
+const HeroDeck = () => {
+  const { t } = useI18n();
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], ["0%", "10%"]);
+  const fade = useTransform(scrollYProgress, [0, 0.8], [1, 0]);
+
+  const words1 = t.hero.title1.split(" ");
+  const words2 = t.hero.title2.split(" ");
+
+  return (
+    <section
+      ref={ref}
+      id="top"
+      data-deck-slide=""
+      data-deck-title="Intro"
+      className="deck-slide grain relative flex flex-col justify-center overflow-hidden"
+      style={{ background: "rgba(12, 12, 12, 0.55)" }}
+    >
+      <motion.div style={{ y, opacity: fade }} className="container-xl relative z-10">
+        <motion.div
+          initial={{ opacity: 0, x: -14 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.15, duration: 0.5 }}
+          className="mb-6 flex items-center gap-2"
+        >
+          <span className="w-1.5 h-1.5 rounded-full animate-ping" style={{ background: "var(--acid)" }} />
+          <span className="label-sm text-acid">{t.hero.badge}</span>
+        </motion.div>
+
+        <h1
+          className="font-display font-black tracking-tighter leading-none text-cream"
+          style={{ fontSize: "clamp(38px, 11vw, 56px)" }}
+        >
+          <span className="block">
+            {words1.map((word, i) => (
+              <CurtainWord key={i} word={word} delay={0.25 + i * 0.05} />
+            ))}{" "}
+          </span>
+          <span className="block" style={{ color: "var(--acid)" }}>
+            {words2.map((word, i) => (
+              <CurtainWord
+                key={i}
+                word={word}
+                delay={0.25 + words1.length * 0.05 + i * 0.05}
+              />
+            ))}
+          </span>
+        </h1>
+
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.9, duration: 0.7 }}
+          className="mt-5 max-w-[420px] text-[15px] leading-relaxed"
+          style={{ color: "var(--muted-body)", fontFamily: "var(--font-body)" }}
+        >
+          {t.hero.subtitle}
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.6 }}
+          className="mt-7 flex items-center gap-3"
+        >
+          <a href="#work" className="btn-primary flex-1 justify-center">
+            {t.hero.ctaWork}
+            <ArrowDownRight className="w-4 h-4" />
+          </a>
+          <a href="#contact" className="btn-ghost">{t.hero.ctaContact}</a>
+        </motion.div>
+      </motion.div>
+
+      {/* Stat ticker — every number stays on one line, none get cut off */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.3, duration: 0.8 }}
+        className="relative z-10 mt-10 overflow-hidden"
+        style={{ borderTop: "1px solid var(--wire)", borderBottom: "1px solid var(--wire)" }}
+      >
+        <div className="marquee-track flex w-max items-center gap-8 py-3">
+          {[...HERO_STATS, ...HERO_STATS, ...HERO_STATS].map(({ n, l }, i) => (
+            <span key={i} className="flex shrink-0 items-baseline gap-1.5">
+              <span className="font-display font-black text-lg text-acid">{n}</span>
+              <span className="text-[11px] uppercase tracking-wider font-body" style={{ color: "var(--muted-label)" }}>
+                {l}
+              </span>
+              <span className="ml-6 text-[10px]" style={{ color: "var(--wire-2)" }} aria-hidden>
+                ✦
+              </span>
+            </span>
+          ))}
+        </div>
+      </motion.div>
+    </section>
+  );
+};
+
 export const Hero = () => {
   const { t } = useI18n();
+  const { isDeck } = useDeckChapter("Intro");
   const containerRef = useRef<HTMLElement>(null);
   const [mobile, setMobile] = useState(isTouchDevice());
 
@@ -70,6 +180,15 @@ export const Hero = () => {
   const cardY  = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "0%"] : ["0%", "30%"]);
   const shardY = useTransform(scrollYProgress, [0, 1], mobile ? ["0%", "0%"] : ["0%", "100%"]);
   const opacity = useTransform(scrollYProgress, [0, 0.7], mobile ? [1, 1] : [1, 0]);
+
+  if (isDeck) {
+    return (
+      <>
+        <EditorialCursor />
+        <HeroDeck />
+      </>
+    );
+  }
 
   const words1 = t.hero.title1.split(" ");
   const words2 = t.hero.title2.split(" ");
@@ -179,12 +298,7 @@ export const Hero = () => {
           style={{ borderTop: "1px solid var(--wire)" }}
         >
           <div className="grid grid-cols-2 gap-4 sm:flex sm:items-center sm:gap-14 pt-6">
-            {[
-              { n: "20+", l: "Projects shipped" },
-              { n: "15+", l: "Happy clients" },
-              { n: "3+", l: "Years" },
-              { n: "99%", l: "Client retention" },
-            ].map(({ n, l }) => (
+            {HERO_STATS.map(({ n, l }) => (
               <div key={l} className="shrink-0 flex items-baseline">
                 <span className="font-display font-black text-xl sm:text-3xl text-acid">{n}</span>
                 <span className="ml-1.5 text-xs sm:text-sm text-muted font-body leading-tight">{l}</span>

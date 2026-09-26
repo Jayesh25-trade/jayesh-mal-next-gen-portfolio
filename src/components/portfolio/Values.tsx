@@ -2,6 +2,8 @@ import { useState, useRef } from "react";
 import { motion, useInView } from "framer-motion";
 import { Palette, Target, Cpu, Zap, Activity, ArrowRight, ShieldCheck, Gauge, Sparkles } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
+import { SwipeDeck } from "@/components/deck/SwipeDeck";
+import { useIsDeck } from "@/hooks/use-deck";
 
 /* ── HUD Graphic Widget 01: Rotating Circular Radar Dial (Modern UI/UX) ── */
 const HudDialWidget = ({ active }: { active: boolean }) => (
@@ -134,39 +136,123 @@ const HudVoltageWidget = ({ active }: { active: boolean }) => (
   </div>
 );
 
+/* ── Shared telemetry badges ── */
+const METRICS = [
+  { label: "TELEMETRY", value: "60 FPS Motion UX", tag: "Pixel Perfect" },
+  { label: "BUSINESS KPI", value: "+340% Conversion", tag: "Zero Debt" },
+  { label: "AUTOMATION", value: "Smart CI/CD Pipelines", tag: "AI Integrated" },
+  { label: "LIGHTHOUSE", value: "99+ Core Web Vitals", tag: "Ultra Speed" },
+];
+
+const getWidget = (idx: number, active: boolean) => {
+  switch (idx) {
+    case 0:
+      return <HudDialWidget active={active} />;
+    case 1:
+      return <HudTargetWidget active={active} />;
+    case 2:
+      return <HudMatrixWidget active={active} />;
+    case 3:
+    default:
+      return <HudVoltageWidget active={active} />;
+  }
+};
+
+/* ── PHONE DECK: swipe through the four reasons ── */
+const ValuesDeck = () => {
+  const { t } = useI18n();
+
+  return (
+    <section
+      data-deck-slide=""
+      data-deck-title="Why us"
+      className="deck-slide grain relative overflow-hidden"
+      style={{ background: "rgba(12, 12, 12, 0.7)" }}
+    >
+      <div className="container-xl relative z-10">
+        <div className="mb-5 flex items-center gap-2">
+          <span className="w-2 h-2 rounded-full bg-acid animate-ping" />
+          <span className="label-sm text-acid uppercase tracking-widest font-semibold">
+            03 — WHY WORK WITH US
+          </span>
+        </div>
+
+        <h2
+          className="font-display font-black tracking-tighter text-text uppercase"
+          style={{ fontSize: "clamp(28px, 8vw, 38px)", lineHeight: 1 }}
+        >
+          Why work with us
+        </h2>
+        <p className="mt-1 font-mono text-sm text-acid">
+          Modern engineering meets business goals
+        </p>
+        <p
+          className="mt-3 text-[13px] leading-relaxed"
+          style={{ color: "var(--muted-body)", fontFamily: "var(--font-body)" }}
+        >
+          We don't just write code — we engineer scalable digital assets designed to convert, perform, and scale seamlessly.
+        </p>
+
+        <div className="mt-6">
+          <SwipeDeck ariaLabel="Reasons to work with us" itemClassName="h-full">
+            {t.values.items.map((item, i) => {
+              const metric = METRICS[i] ?? METRICS[0];
+              return (
+                <article
+                  key={item.title}
+                  className="glass-slab flex h-full flex-col gap-3 rounded-2xl border border-white/10 p-5"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-display font-black text-2xl" style={{ color: "var(--acid)" }}>
+                      0{i + 1}
+                    </span>
+                    {getWidget(i, true)}
+                  </div>
+
+                  <span className="self-start rounded border border-acid/30 bg-acid/10 px-2 py-0.5 text-[10px] font-mono uppercase tracking-widest text-acid">
+                    {metric.tag}
+                  </span>
+
+                  <h3
+                    className="font-display font-bold tracking-tight text-text"
+                    style={{ fontSize: "clamp(20px, 5.4vw, 26px)", lineHeight: 1.15 }}
+                  >
+                    {item.title}
+                  </h3>
+
+                  <p
+                    className="text-[13px] leading-relaxed"
+                    style={{ color: "var(--muted-body)", fontFamily: "var(--font-body)" }}
+                  >
+                    {item.desc}
+                  </p>
+
+                  <div
+                    className="mt-auto flex items-center justify-between border-t border-white/10 pt-3"
+                  >
+                    <span className="text-[10px] font-mono uppercase tracking-wider" style={{ color: "var(--muted-label)" }}>
+                      {metric.label}
+                    </span>
+                    <span className="font-mono text-xs font-bold text-cream">{metric.value}</span>
+                  </div>
+                </article>
+              );
+            })}
+          </SwipeDeck>
+        </div>
+      </div>
+    </section>
+  );
+};
+
 export const Values = () => {
   const { t } = useI18n();
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-80px" });
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(0);
+  const isDeck = useIsDeck();
 
-  const getWidget = (idx: number, active: boolean) => {
-    switch (idx) {
-      case 0:
-        return <HudDialWidget active={active} />;
-      case 1:
-        return <HudTargetWidget active={active} />;
-      case 2:
-        return <HudMatrixWidget active={active} />;
-      case 3:
-      default:
-        return <HudVoltageWidget active={active} />;
-    }
-  };
-
-  const getMetricBadge = (idx: number) => {
-    switch (idx) {
-      case 0:
-        return { label: "TELEMETRY", value: "60 FPS Motion UX", tag: "Pixel Perfect" };
-      case 1:
-        return { label: "BUSINESS KPI", value: "+340% Conversion", tag: "Zero Debt" };
-      case 2:
-        return { label: "AUTOMATION", value: "Smart CI/CD Pipelines", tag: "AI Integrated" };
-      case 3:
-      default:
-        return { label: "LIGHTHOUSE", value: "99+ Core Web Vitals", tag: "Ultra Speed" };
-    }
-  };
+  if (isDeck) return <ValuesDeck />;
 
   return (
     <section
@@ -221,7 +307,7 @@ export const Values = () => {
         <div className="flex flex-col gap-6">
           {t.values.items.map((item, i) => {
             const isHovered = hoveredIdx === i;
-            const metric = getMetricBadge(i);
+            const metric = METRICS[i] ?? METRICS[0];
 
             return (
               <motion.div

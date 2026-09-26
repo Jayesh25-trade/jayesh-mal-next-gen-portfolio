@@ -1,5 +1,8 @@
 import { I18nProvider } from "@/i18n/I18nProvider";
 import { LenisProvider } from "@/components/smooth-scroll/LenisProvider";
+import { DeckProvider } from "@/components/deck/DeckContext";
+import { Atmosphere } from "@/components/deck/Atmosphere";
+import { MobileDock } from "@/components/deck/MobileDock";
 import { Scene } from "@/components/webgl/Scene";
 import { MagneticCursor } from "@/components/cursor/MagneticCursor";
 import { Navbar } from "@/components/portfolio/Navbar";
@@ -22,35 +25,40 @@ import { LanguageModal } from "@/components/portfolio/LanguageModal";
 const Index = () => {
   return (
     <I18nProvider>
-      <LenisProvider>
-        {/* Persistent WebGL canvas — fixed behind all content */}
-        <Scene />
+      <DeckProvider>
+        <LenisProvider>
+          {/* Desktop/tablet WebGL canvas — swapped for the light atmosphere on phones */}
+          <Scene />
+          <Atmosphere />
 
-        {/* Morphing custom cursor (desktop only) */}
-        <MagneticCursor />
+          {/* Morphing custom cursor (desktop only) */}
+          <MagneticCursor />
 
-        {/* Counter-scrolling Kinetic Typography Pillars & Mobile Progress Bar */}
-        <KineticPillars />
+          {/* Counter-scrolling Kinetic Typography Pillars & Mobile Progress Bar */}
+          <KineticPillars />
 
-        {/* All content sits above the WebGL canvas via z-index */}
-        <main className="relative min-h-screen" style={{ zIndex: 1 }}>
-          <Navbar />
-          <Hero />
-          <Stats />
-          <About />
-          <Values />
-          <Featured />
-          <Projects />
-          <Process />
-          <Services />
-          <Stack />
-          <Testimonials />
-          <FAQ />
-          <Contact />
-          <Footer />
-          <LanguageModal />
-        </main>
-      </LenisProvider>
+          {/* All content sits above the WebGL canvas via z-index */}
+          <main className="relative min-h-screen" style={{ zIndex: 1 }}>
+            <Navbar />
+            <Hero />
+            <Stats />
+            <About />
+            <Values />
+            <Featured />
+            <Projects />
+            <Process />
+            <Services />
+            <Stack />
+            <Testimonials />
+            <FAQ />
+            <Contact />
+            <Footer />
+            <LanguageModal />
+          </main>
+
+          <MobileDock />
+        </LenisProvider>
+      </DeckProvider>
     </I18nProvider>
   );
 };

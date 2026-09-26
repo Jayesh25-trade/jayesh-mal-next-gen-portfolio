@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, ArrowLeft, ArrowRight } from "lucide-react";
+import { SwipeDeck } from "@/components/deck/SwipeDeck";
+import { useIsDeck } from "@/hooks/use-deck";
 
 const TESTIMONIALS = [
   { quote: "Jimmzzz Developers delivered our billing system 2 weeks ahead of schedule. Sales tracking is now effortless and our team loves it.", name: "Maheshwari Group", role: "Retail business", initials: "MG" },
@@ -15,6 +17,67 @@ export const Testimonials = () => {
   const next = () => setActive((a) => (a === TESTIMONIALS.length - 1 ? 0 : a + 1));
 
   const current = TESTIMONIALS[active];
+  const isDeck = useIsDeck();
+
+  /* ── PHONE DECK: flick through the client words ── */
+  if (isDeck) {
+    return (
+      <section
+        data-deck-slide=""
+        data-deck-title="Clients"
+        className="deck-slide grain relative overflow-hidden"
+        style={{ background: "rgba(12, 12, 12, 0.7)" }}
+      >
+        <div className="container-xl relative z-10">
+          <div className="mb-5 flex items-center gap-4">
+            <span className="label-sm text-acid">06 — CLIENT TALK</span>
+            <div className="rule flex-1" />
+          </div>
+
+          <SwipeDeck ariaLabel="Client testimonials" itemClassName="h-full">
+            {TESTIMONIALS.map((tm) => (
+              <figure
+                key={tm.name}
+                className="glass-slab flex h-full flex-col rounded-2xl border border-white/10 p-5"
+              >
+                <span
+                  className="font-display font-black leading-none select-none"
+                  style={{ fontSize: 56, color: "var(--wire-2)" }}
+                  aria-hidden
+                >
+                  “
+                </span>
+
+                <blockquote
+                  className="font-display font-bold text-text leading-tight tracking-tight"
+                  style={{ fontSize: "clamp(18px, 5vw, 24px)", marginTop: -6 }}
+                >
+                  "{tm.quote}"
+                </blockquote>
+
+                <figcaption className="mt-auto flex items-center gap-3 border-t border-white/10 pt-4">
+                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-acid/40 bg-acid/5 font-display text-sm font-bold text-acid">
+                    {tm.initials}
+                  </div>
+                  <div className="min-w-0">
+                    <h4 className="font-display font-bold text-[15px] text-text truncate">{tm.name}</h4>
+                    <p className="font-mono text-[10px] uppercase tracking-widest text-muted mt-0.5">
+                      {tm.role}
+                    </p>
+                  </div>
+                  <div className="ml-auto flex shrink-0 gap-0.5">
+                    {Array.from({ length: 5 }).map((_, j) => (
+                      <Star key={j} className="h-3.5 w-3.5 fill-acid text-acid" />
+                    ))}
+                  </div>
+                </figcaption>
+              </figure>
+            ))}
+          </SwipeDeck>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="testimonials" className="relative py-28 sm:py-36 overflow-hidden">
