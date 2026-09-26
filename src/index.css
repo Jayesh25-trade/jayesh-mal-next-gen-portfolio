@@ -18,6 +18,9 @@
     --text:     #EBEBEB;
     --muted:    #6B6B6B;
     --muted-2:  #4A4A4A;
+    /* Readable body copy on dark surfaces (AA) */
+    --muted-body:  #9C9C9C;
+    --muted-label: #8A8A8A;
 
     /* Shifting Aurora Tokens */
     --aurora-1: rgba(0, 229, 255, 0.08);
@@ -157,7 +160,7 @@
     font-weight: 500;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: var(--muted);
+    color: var(--muted-label);
   }
 
   .acid-text { color: var(--acid); }
@@ -301,3 +304,102 @@
   .bg-cream { background-color: var(--cream); }
   .border-wire { border-color: var(--wire); }
 }
+
+/* ─── Deck Mode: phones become a full-screen slide stack ─── */
+@layer components {
+  /* Light atmosphere — phone replacement for the WebGL canvas */
+  .atmos-glow {
+    background:
+      radial-gradient(circle at 30% 18%, rgba(0, 229, 255, 0.18) 0%, transparent 46%),
+      radial-gradient(circle at 72% 42%, rgba(168, 85, 247, 0.15) 0%, transparent 44%),
+      radial-gradient(circle at 45% 80%, rgba(184, 255, 0, 0.13) 0%, transparent 50%);
+    animation: atmos-drift 16s ease-in-out infinite alternate;
+  }
+
+  .atmos-grid {
+    background-image:
+      linear-gradient(to right, rgba(184, 255, 0, 0.07) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0, 229, 255, 0.06) 1px, transparent 1px);
+    background-size: 38px 38px;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 60%, transparent 96%);
+    mask-image: linear-gradient(to bottom, transparent 0%, #000 20%, #000 60%, transparent 96%);
+  }
+
+  .atmos-vignette {
+    background: radial-gradient(ellipse at 50% 40%, transparent 40%, rgba(6, 6, 6, 0.7) 100%);
+  }
+
+  /* Momentum swipe rail */
+  .deck-swipe {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .deck-swipe::-webkit-scrollbar { display: none; }
+  .deck-swipe--bleed {
+    margin-inline: calc(-1 * var(--gutter));
+    padding-inline: var(--gutter);
+  }
+  .deck-swipe-item {
+    flex: 0 0 auto;
+    width: calc(100% - 30px);
+    scroll-snap-align: center;
+  }
+  .deck-swipe-item--wide { width: calc(100% - 16px); }
+
+  /* Chapter dock */
+  .deck-dock {
+    position: fixed;
+    z-index: 1200;
+    left: 10px;
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+  .deck-dock-inner {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    height: 54px;
+    padding-inline: 10px 8px;
+    border-radius: 16px;
+    background: rgba(16, 16, 16, 0.94);
+    border: 1px solid var(--wire-2);
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.55);
+  }
+}
+
+@keyframes atmos-drift {
+  from { transform: translate3d(-3%, -2%, 0) scale(1.06); }
+  to   { transform: translate3d(3%, 3%, 0) scale(1.14); }
+}
+
+@media (max-width: 767px) {
+  html.deck {
+    scroll-snap-type: y mandatory;
+    scroll-padding-top: 0;
+  }
+
+  html.deck .deck-slide {
+    min-height: 100vh;
+    min-height: 100svh;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-block: 84px 96px;
+  }
+
+  html.deck .deck-slide--tail {
+    min-height: auto;
+    scroll-snap-align: end;
+    scroll-snap-stop: normal;
+    justify-content: flex-end;
+    padding-block: 32px 108px;
+  }
+}
+

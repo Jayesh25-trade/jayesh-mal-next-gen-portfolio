@@ -1,8 +1,10 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { CheckCircle2, ShieldCheck, Cpu, Rocket, ArrowRight } from "lucide-react";
+import { SwipeDeck } from "@/components/deck/SwipeDeck";
+import { useIsDeck } from "@/hooks/use-deck";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -51,6 +53,8 @@ export const Process = () => {
   const pathRef = useRef<SVGPathElement>(null);
   const mobileRef = useRef<HTMLDivElement>(null);
   const isMobileInView = useInView(mobileRef, { once: true, margin: "-60px" });
+  const isDeck = useIsDeck();
+  const [phase, setPhase] = useState(0);
 
   useEffect(() => {
     // Only initialize GSAP pinned horizontal scroll on desktop (width >= 768)
@@ -96,13 +100,122 @@ export const Process = () => {
     return () => ctx.revert();
   }, []);
 
+  /* ── PHONE DECK: swipe the four phases, connector fills as you go ── */
+  if (isDeck) {
+    return (
+      <section
+        data-deck-slide=""
+        data-deck-title="Process"
+        className="deck-slide grain relative overflow-hidden"
+        style={{ background: "rgba(18, 18, 18, 0.72)" }}
+      >
+        <div className="container-xl relative z-10">
+          <div className="mb-2 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-acid" />
+            <span className="label-sm text-acid uppercase tracking-widest text-xs">
+              06 — ENGINEERING METHODOLOGY
+            </span>
+          </div>
+          <h2
+            className="font-display font-black tracking-tighter text-text uppercase"
+            style={{ fontSize: "clamp(28px, 8vw, 38px)", lineHeight: 1 }}
+          >
+            How we work
+          </h2>
+          <p
+            className="mt-2 text-[13px] leading-relaxed"
+            style={{ color: "var(--muted-body)", fontFamily: "var(--font-body)" }}
+          >
+            A battle-tested 4-phase engineering framework designed for scalable infrastructure, flawless user experience, and rapid execution.
+          </p>
+
+          <div className="mt-5 h-[2px] w-full overflow-hidden rounded-full bg-white/10">
+            <div
+              className="h-full rounded-full transition-all duration-500"
+              style={{
+                width: `${((phase + 1) / STEPS.length) * 100}%`,
+                background: "var(--acid)",
+                boxShadow: "0 0 12px rgba(184,255,0,0.5)",
+              }}
+            />
+          </div>
+
+          <div className="mt-4">
+            <SwipeDeck
+              ariaLabel="How we work together"
+              itemClassName="h-full"
+              onActiveChange={setPhase}
+            >
+              {STEPS.map((s, i) => {
+                const Icon = s.icon;
+                return (
+                  <article
+                    key={s.num}
+                    className="glass-slab flex h-full flex-col rounded-2xl border border-white/10 p-5"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-acid">
+                        {s.phase}
+                      </span>
+                      <span
+                        className="font-display font-black text-2xl"
+                        style={{ color: i === phase ? "var(--acid)" : "var(--wire-2)" }}
+                      >
+                        {s.num}
+                      </span>
+                    </div>
+
+                    <h3
+                      className="mt-3 flex items-center gap-2 font-display font-bold tracking-tight text-text"
+                      style={{ fontSize: "clamp(19px, 5vw, 24px)", lineHeight: 1.15 }}
+                    >
+                      <Icon className="h-5 w-5 shrink-0 text-acid" />
+                      {s.title}
+                    </h3>
+
+                    <p
+                      className="mt-2 text-[12px] leading-relaxed"
+                      style={{ color: "var(--muted-body)", fontFamily: "var(--font-body)" }}
+                    >
+                      {s.desc}
+                    </p>
+
+                    <div className="mt-auto flex flex-wrap gap-1.5 border-t border-white/10 pt-3">
+                      {s.deliverables.map((item) => (
+                        <span
+                          key={item}
+                          className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-1 font-mono text-[10px] text-cream"
+                        >
+                          ✓ {item}
+                        </span>
+                      ))}
+                    </div>
+                  </article>
+                );
+              })}
+
+              <div className="glass-slab flex h-full flex-col items-start justify-center rounded-2xl border border-acid/30 bg-acid/5 p-5">
+                <span className="font-display font-black text-xl tracking-tight text-cream">
+                  Production-Grade Delivery
+                </span>
+                <p
+                  className="mt-2 text-[12px] leading-relaxed"
+                  style={{ color: "var(--muted-body)", fontFamily: "var(--font-body)" }}
+                >
+                  Enterprise software engineered with speed, security, and precision.
+                </p>
+                <a href="#contact" className="btn-primary mt-4 text-xs">
+                  Initiate Project <ArrowRight className="w-3.5 h-3.5" />
+                </a>
+              </div>
+            </SwipeDeck>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
-    <section
-      ref={sectionRef}
-      id="process"
-      className="grain aurora-bg relative overflow-hidden"
-      style={{ background: "var(--ink-2)" }}
-    >
       {/* ── MOBILE VIEW: Vertical Card Stack (Hidden on Desktop) ── */}
       <div ref={mobileRef} className="block md:hidden container-xl py-16">
         <div className="mb-8">

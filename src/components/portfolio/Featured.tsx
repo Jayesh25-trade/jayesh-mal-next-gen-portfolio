@@ -2,6 +2,8 @@ import { useEffect, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ArrowUpRight } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
+import { useIsDeck } from "@/hooks/use-deck";
+import { cn } from "@/lib/utils";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -11,6 +13,7 @@ const URL = "https://maheshwari-smart-bill.vercel.app/";
 
 export const Featured = () => {
   const { t } = useI18n();
+  const isDeck = useIsDeck();
   const sectionRef = useRef<HTMLElement>(null);
   const imgRef = useRef<HTMLDivElement>(null);
 
@@ -43,8 +46,14 @@ export const Featured = () => {
     <section
       ref={sectionRef}
       id="work"
-      className="grain"
-      style={{ background: "var(--ink-2)", paddingBlock: "var(--section-py)" }}
+      data-deck-slide={isDeck ? "" : undefined}
+      data-deck-title={isDeck ? "Featured" : undefined}
+      className={cn("grain", isDeck && "deck-slide")}
+      style={
+        isDeck
+          ? { background: "rgba(14, 14, 14, 0.7)" }
+          : { background: "var(--ink-2)", paddingBlock: "var(--section-py)" }
+      }
     >
       <div className="container-xl">
         {/* Label */}
@@ -56,7 +65,7 @@ export const Featured = () => {
         {/* Full-bleed image with curtain reveal */}
         <div
           className="featured-img relative overflow-hidden w-full mb-6"
-          style={{ aspectRatio: "16/8", borderRadius: 2 }}
+          style={{ aspectRatio: isDeck ? "4/3" : "16/8", borderRadius: 2 }}
           data-cursor-view
         >
           <motion.div className="w-full h-full" style={{ scale: imgScale }}>
@@ -93,7 +102,7 @@ export const Featured = () => {
               viewport={{ once: true }}
               transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
               className="font-display font-black tracking-tighter"
-              style={{ fontSize: "clamp(32px, 5vw, 72px)", color: "var(--text)", lineHeight: 1 }}
+              style={{ fontSize: isDeck ? "clamp(30px, 8.5vw, 40px)" : "clamp(32px, 5vw, 72px)", color: "var(--text)", lineHeight: 1 }}
             >
               {t.featured.title}
             </motion.h2>

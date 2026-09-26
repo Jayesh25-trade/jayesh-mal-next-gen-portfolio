@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Star, ArrowLeft, ArrowRight } from "lucide-react";
+import { SwipeDeck } from "@/components/deck/SwipeDeck";
+import { useIsDeck } from "@/hooks/use-deck";
 
 const TESTIMONIALS = [
   { quote: "Jimmzzz Developers delivered our billing system 2 weeks ahead of schedule. Sales tracking is now effortless and our team loves it.", name: "Maheshwari Group", role: "Retail business", initials: "MG" },

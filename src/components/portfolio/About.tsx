@@ -1,9 +1,11 @@
 import { useRef, useEffect, useState } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { DeckSlide } from "@/components/deck/DeckSlide";
+import { useIsDeck } from "@/hooks/use-deck";
 
 const CIPHER_CHARS = "010101XYZ#%@!$*[]{}<>/\\&+=ØÆ";
 
-const MatrixDecodeText = () => {
+const MatrixDecodeText = ({ size }: { size?: string }) => {
   const containerRef = useRef<HTMLParagraphElement>(null);
   const isInView = useInView(containerRef, { once: true, margin: "-60px" });
   const [displayText, setDisplayText] = useState<string>("");
@@ -68,7 +70,7 @@ const MatrixDecodeText = () => {
     <p
       ref={containerRef}
       className="font-display font-bold leading-tight tracking-tighter transition-all"
-      style={{ fontSize: "clamp(26px, 3.5vw, 48px)", color: "var(--ink)" }}
+      style={{ fontSize: size || "clamp(26px, 3.5vw, 48px)", color: "var(--ink)" }}
     >
       {renderText()}
     </p>
@@ -99,10 +101,121 @@ const ABOUT_POINTS = [
   "SEO, Core Web Vitals & accessibility — built in",
 ];
 
+const CREAM = {
+  background: "var(--cream)",
+  color: "var(--ink)",
+} as const;
+
+/* ── PHONE DECK: two screens — who we are, then the founder ─── */
+const AboutDeck = () => {
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+  const lineScale = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+  const inView = useInView(ref, { once: true, margin: "-60px" });
+
+  return (
+    <>
+      <DeckSlide
+        title="About"
+        id="about"
+        className="grain relative"
+        style={CREAM}
+      >
+        <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none" />
+        <div className="container-xl relative z-10">
+          <div className="mb-6 flex items-center justify-between">
+            <span className="label-sm" style={{ color: "var(--muted-2)" }}>About us</span>
+            <span className="label-sm" style={{ color: "var(--muted-2)" }}>02</span>
+          </div>
+
+          <Curtain delay={0.1}>
+            <MatrixDecodeText size="clamp(24px, 6.4vw, 30px)" />
+          </Curtain>
+
+          <motion.div
+            style={{ scaleX: lineScale, transformOrigin: "left", background: "var(--ink)", height: "1px" }}
+            className="mt-7 w-full"
+          />
+          <p
+            className="mt-3 text-[13px] leading-relaxed"
+            style={{ color: "var(--muted-2)", fontFamily: "var(--font-body)" }}
+          >
+            Since 2021, building fast and thoughtfully.
+          </p>
+
+          <motion.p
+            initial={{ opacity: 0, y: 18 }}
+            animate={inView ? { opacity: 1, y: 0 } : {}}
+            transition={{ delay: 0.25, duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-6 text-[15px] leading-relaxed"
+            style={{ color: "var(--muted-2)", fontFamily: "var(--font-body)" }}
+          >
+            Led by founder Jayesh Mal, our studio obsesses over performance, motion,
+            and the tiny details that make a product feel premium. We design and
+            engineer modern web experiences end-to-end — from concept to production.
+          </motion.p>
+        </div>
+      </DeckSlide>
+
+      <DeckSlide
+        title="Founder"
+        className="grain relative"
+        style={CREAM}
+      >
+        <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none" />
+        <div className="container-xl relative z-10">
+          <div className="mb-3 flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full" style={{ background: "var(--acid-dim)" }} />
+            <span className="label-sm uppercase font-bold" style={{ color: "var(--ink)" }}>
+              About Jayesh Mal — Founder & Full-Stack Developer
+            </span>
+          </div>
+          <p
+            className="text-[15px] leading-relaxed font-body"
+            style={{ color: "var(--ink)" }}
+          >
+            A passionate full-stack developer and digital architect dedicated to crafting ultra-fast, visually stunning web applications and scalable software systems. Combining cutting-edge frontend engineering with robust architecture, Jayesh transforms complex ideas into seamless, high-impact digital experiences built for performance and growth.
+          </p>
+
+          <ul className="mt-7">
+            {ABOUT_POINTS.map((pt, i) => (
+              <motion.li
+                key={pt}
+                initial={{ opacity: 0, x: -14 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true, margin: "-30px" }}
+                transition={{ delay: i * 0.08, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                className="flex items-start gap-3 py-3 text-[13px] leading-snug"
+                style={{
+                  borderBottom: i === ABOUT_POINTS.length - 1 ? "1px solid var(--cream-2)" : "none",
+                  borderTop: "1px solid var(--cream-2)",
+                  color: "var(--ink)",
+                  fontFamily: "var(--font-body)",
+                }}
+              >
+                <span
+                  className="shrink-0 font-display font-black text-[11px]"
+                  style={{ color: "var(--acid-dim)" }}
+                >
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                {pt}
+              </motion.li>
+            ))}
+          </ul>
+        </div>
+      </DeckSlide>
+    </>
+  );
+};
+
 export const About = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
   const lineScale = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+  const isDeck = useIsDeck();
+
+  if (isDeck) return <AboutDeck />;
 
   return (
     <section

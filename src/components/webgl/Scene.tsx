@@ -4,6 +4,7 @@ import { ParticleField } from "./ParticleField";
 import { FloatingGrid } from "./FloatingGrid";
 import { CameraRig } from "./CameraRig";
 import { LiquidMesh } from "./LiquidMesh";
+import { useIsDeck } from "@/hooks/use-deck";
 
 class WebGLErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode }) {
@@ -40,6 +41,7 @@ export const Scene = () => {
   const mousePos = useRef<[number, number]>([0, 0]);
   const [mobile, setMobile] = useState(false);
   const [webglSupported, setWebglSupported] = useState(true);
+  const isDeck = useIsDeck();
 
   useEffect(() => {
     setWebglSupported(checkWebGLSupport());
@@ -84,7 +86,8 @@ export const Scene = () => {
     };
   }, []);
 
-  if (!webglSupported) return null;
+  // Phones get the CSS atmosphere instead — no shaders, no battery drain
+  if (!webglSupported || isDeck) return null;
 
   return (
     <WebGLErrorBoundary>

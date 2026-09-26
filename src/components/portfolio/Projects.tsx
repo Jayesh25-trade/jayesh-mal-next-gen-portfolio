@@ -2,6 +2,8 @@ import { useRef, useState } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, Sparkles } from "lucide-react";
 import { useI18n } from "@/i18n/I18nProvider";
+import { SwipeDeck } from "@/components/deck/SwipeDeck";
+import { useIsDeck } from "@/hooks/use-deck";
 
 const PROJECTS = [
   {
@@ -86,6 +88,66 @@ const PROJECTS = [
     size: "small"
   },
 ];
+
+const hostOf = (url: string) => url.replace("https://", "").replace("http://", "").replace(/\/$/, "");
+
+/* ── PHONE DECK card: everything visible, nothing hidden behind a hover ── */
+const DeckProjectCard = ({ p }: { p: typeof PROJECTS[0] }) => (
+  <a
+    href={p.url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="glass-slab flex h-full flex-col overflow-hidden rounded-2xl border border-white/10"
+  >
+    <div className="relative w-full overflow-hidden" style={{ aspectRatio: "16/10" }}>
+      <img
+        src={p.img}
+        alt={`${p.name} preview`}
+        loading="lazy"
+        width={1280}
+        height={800}
+        onError={(e) => {
+          (e.currentTarget as HTMLImageElement).src = "/placeholder.svg";
+        }}
+        className="h-full w-full object-cover"
+      />
+      <span className="tag absolute left-3 top-3 border-wire-2 bg-ink/85 text-text text-[10px]">
+        {p.category}
+      </span>
+    </div>
+
+    <div className="flex flex-1 flex-col p-4">
+      <h3
+        className="font-display font-bold tracking-tighter text-text"
+        style={{ fontSize: "clamp(18px, 5vw, 22px)", lineHeight: 1.1 }}
+      >
+        {p.name}
+      </h3>
+
+      <p
+        className="mt-2 text-[12px] leading-relaxed"
+        style={{ color: "var(--muted-body)", fontFamily: "var(--font-body)" }}
+      >
+        {p.description}
+      </p>
+
+      <div className="mt-3 flex flex-wrap gap-1.5">
+        {p.tags.map((t) => (
+          <span key={t} className="tag text-[10px] text-acid border-acid/30 bg-acid/10">
+            {t}
+          </span>
+        ))}
+      </div>
+
+      <div className="mt-auto flex items-center justify-between gap-3 border-t border-white/10 pt-3">
+        <span className="truncate font-mono text-[10px]" style={{ color: "var(--muted-label)" }}>
+          {hostOf(p.url)}
+        </span>
+        <ArrowUpRight className="h-4 w-4 shrink-0 text-acid" />
+      </div>
+    </div>
+  </a>
+);
 
 const ProjectCard = ({ p, i }: { p: typeof PROJECTS[0]; i: number }) => {
   const [hovered, setHovered] = useState(false);
@@ -238,6 +300,43 @@ export const Projects = () => {
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
   const headerY = useTransform(scrollYProgress, [0, 0.3], ["30px", "0px"]);
   const headerO = useTransform(scrollYProgress, [0, 0.2], [0, 1]);
+  const isDeck = useIsDeck();
+
+  /* ── PHONE DECK: one screen, flick through every project ── */
+  if (isDeck) {
+    return (
+      <section
+        data-deck-slide=""
+        data-deck-title="Work"
+        className="deck-slide grain relative overflow-hidden"
+        style={{ background: "rgba(12, 12, 12, 0.7)" }}
+      >
+        <div className="container-xl relative z-10">
+          <span className="label-sm text-acid block mb-2">05 — 3D GLASS SLABS</span>
+          <h2
+            className="font-display font-black tracking-tighter uppercase text-text"
+            style={{ fontSize: "clamp(28px, 8vw, 38px)", lineHeight: 1 }}
+          >
+            {t.projects.title}
+          </h2>
+          <p
+            className="mt-2 text-[13px] leading-relaxed"
+            style={{ color: "var(--muted-body)", fontFamily: "var(--font-body)" }}
+          >
+            {t.projects.subtitle}
+          </p>
+
+          <div className="mt-5">
+            <SwipeDeck ariaLabel="Selected work" itemClassName="h-full">
+              {PROJECTS.map((p) => (
+                <DeckProjectCard key={p.name} p={p} />
+              ))}
+            </SwipeDeck>
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
