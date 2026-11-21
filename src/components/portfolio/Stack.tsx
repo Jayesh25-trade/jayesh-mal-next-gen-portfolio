@@ -49,14 +49,20 @@ export const Stack = () => {
       style={{ background: "var(--ink)", paddingBlock: "var(--section-py)" }}
     >
       <div className="container-xl mb-12 sm:mb-16">
-        <div className="flex items-end gap-6">
-          <span className="label-sm text-muted-ed block">08</span>
-          <h2
-            className="font-display font-black tracking-tighter"
-            style={{ fontSize: "var(--h-section)", color: "var(--text)", lineHeight: 1 }}
-          >
-            {t.stack.title}
-          </h2>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-2 h-2 rounded-full bg-acid" />
+              <span className="label-sm text-acid uppercase tracking-widest text-xs font-semibold">07 — TECHNOLOGY ECOSYSTEM</span>
+            </div>
+            <h2
+              className="font-display font-black tracking-tighter uppercase"
+              style={{ fontSize: "var(--h-section)", color: "var(--text)", lineHeight: 1 }}
+            >
+              {t.stack.title}
+            </h2>
+          </div>
+          <p className="text-sm text-muted font-body max-w-xs">{t.stack.subtitle}</p>
         </div>
       </div>
 
@@ -64,10 +70,6 @@ export const Stack = () => {
       <div className="flex flex-col gap-0">
         <MarqueeRow items={STACK.slice(0, 8)} />
         <MarqueeRow items={STACK.slice(8)} reversed />
-      </div>
-
-      <div className="container-xl mt-10 sm:mt-12">
-        <p className="label-sm" style={{ color: "var(--muted)" }}>{t.stack.subtitle}</p>
       </div>
     </section>
   );

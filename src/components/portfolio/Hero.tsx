@@ -7,29 +7,6 @@ const isTouchDevice = () =>
   typeof window !== "undefined" &&
   ("ontouchstart" in window || navigator.maxTouchPoints > 0);
 
-/* Custom minimal cursor that follows mouse — desktop only */
-const EditorialCursor = () => {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    if (isTouchDevice()) return;
-    const move = (e: MouseEvent) => {
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate(${e.clientX - 8}px, ${e.clientY - 8}px)`;
-      }
-    };
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
-  }, []);
-  if (isTouchDevice()) return null;
-  return (
-    <div
-      ref={cursorRef}
-      className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-[9999] hidden lg:block"
-      style={{ background: "var(--acid)", mixBlendMode: "difference", transition: "transform 0.08s linear" }}
-    />
-  );
-};
-
 /* Clip-path curtain reveal per word */
 const CurtainWord = ({ word, delay = 0 }: { word: string; delay?: number }) => (
   <span className="inline-block overflow-hidden leading-none max-w-full">
@@ -75,9 +52,7 @@ export const Hero = () => {
   const words2 = t.hero.title2.split(" ");
 
   return (
-    <>
-      <EditorialCursor />
-      <section
+    <section
         ref={containerRef}
         id="top"
         className="relative grain aurora-bg overflow-hidden"
@@ -208,6 +183,5 @@ export const Hero = () => {
           />
         </motion.div>
       </section>
-    </>
   );
 };

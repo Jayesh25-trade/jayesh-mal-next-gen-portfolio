@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 
 const LABELS: Record<string, string> = {
@@ -7,165 +7,119 @@ const LABELS: Record<string, string> = {
   "data-cursor-explore": "Explore",
 };
 
-interface Particle {
-  x: number;
-  y: number;
-  vx: number;
-  vy: number;
-  size: number;
-  alpha: number;
-  color: string;
-}
-
 export const MagneticCursor = () => {
   const [label, setLabel] = useState("");
   const [isPointer, setIsPointer] = useState(false);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const particlesRef = useRef<Particle[]>([]);
+  const [isVisible, setIsVisible] = useState(false);
 
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
-  const springX = useSpring(cursorX, { stiffness: 300, damping: 28 });
-  const springY = useSpring(cursorY, { stiffness: 300, damping: 28 });
-  const dotX = useSpring(cursorX, { stiffness: 900, damping: 45 });
-  const dotY = useSpring(cursorY, { stiffness: 900, damping: 45 });
+
+  // Buttery spring easing for high-end feel
+  const springX = useSpring(cursorX, { stiffness: 350, damping: 28 });
+  const springY = useSpring(cursorY, { stiffness: 350, damping: 28 });
+  const dotX = useSpring(cursorX, { stiffness: 1000, damping: 50 });
+  const dotY = useSpring(cursorY, { stiffness: 1000, damping: 50 });
 
   useEffect(() => {
-    if (typeof window === "undefined" || "ontouchstart" in window) return;
-
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
-
-    const colors = ["#00e5ff", "#dfff00", "#a855f7", "#ff007f"];
-
-    const addParticle = (x: number, y: number) => {
-      particlesRef.current.push({
-        x,
-        y,
-        vx: (Math.random() - 0.5) * 1.5,
-        vy: (Math.random() - 0.5) * 1.5,
-        size: Math.random() * 3 + 1,
-        alpha: 0.8,
-        color: colors[Math.floor(Math.random() * colors.length)],
-      });
-      if (particlesRef.current.length > 50) {
-        particlesRef.current.shift();
-      }
-    };
-
-    let animId: number;
-    const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const particles = particlesRef.current;
-
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= 0.025;
-
-        if (p.alpha <= 0) {
-          particles.splice(i, 1);
-          continue;
-        }
-
-        ctx.save();
-        ctx.globalAlpha = p.alpha;
-        ctx.fillStyle = p.color;
-        ctx.shadowColor = p.color;
-        ctx.shadowBlur = 8;
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-
-      animId = requestAnimationFrame(render);
-    };
-    animId = requestAnimationFrame(render);
+    if (typeof window === "undefined" || "ontouchstart" in window || navigator.maxTouchPoints > 0) {
+      return;
+    }
 
     const move = (e: MouseEvent) => {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
-
-      addParticle(e.clientX, e.clientY);
+      if (!isVisible) setIsVisible(true);
 
       const el = document.elementFromPoint(e.clientX, e.clientY);
-      if (!el) { setLabel(""); setIsPointer(false); return; }
+      if (!el) {
+        setLabel("");
+        setIsPointer(false);
+        return;
+      }
 
       let foundLabel = "";
       let isPtr = false;
 
       for (const [attr, lbl] of Object.entries(LABELS)) {
-        if (el.closest(`[${attr}]`)) { foundLabel = lbl; isPtr = true; break; }
+        if (el.closest(`[${attr}]`)) {
+          foundLabel = lbl;
+          isPtr = true;
+          break;
+        }
       }
 
       if (!isPtr) {
         const tag = el.tagName.toLowerCase();
-        isPtr = ["a", "button"].includes(tag) || 
-                el.closest("a, button") !== null ||
-                window.getComputedStyle(el).cursor === "pointer";
+        isPtr =
+          ["a", "button", "input", "textarea"].includes(tag) ||
+          el.closest("a, button, [role='button']") !== null ||
+          window.getComputedStyle(el).cursor === "pointer";
       }
 
       setLabel(foundLabel);
       setIsPointer(isPtr);
     };
 
-    window.addEventListener("mousemove", move);
+    const handleMouseLeave = () => setIsVisible(false);
+    const handleMouseEnter = () => setIsVisible(true);
+
+    window.addEventListener("mousemove", move, { passive: true });
+    document.addEventListener("mouseleave", handleMouseLeave);
+    document.addEventListener("mouseenter", handleMouseEnter);
+
     return () => {
       window.removeEventListener("mousemove", move);
-      window.removeEventListener("resize", resize);
-      cancelAnimationFrame(animId);
+      document.removeEventListener("mouseleave", handleMouseLeave);
+      document.removeEventListener("mouseenter", handleMouseEnter);
     };
-  }, [cursorX, cursorY]);
+  }, [cursorX, cursorY, isVisible]);
 
-  if (typeof window !== "undefined" && "ontouchstart" in window) return null;
+  if (typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0)) {
+    return null;
+  }
 
   return (
-    <>
-      {/* Canvas Phosphor Particle Trail */}
-      <canvas
-        ref={canvasRef}
-        className="fixed inset-0 z-[9998] pointer-events-none"
-        aria-hidden="true"
-      />
-
-      {/* Outer ring */}
+    <div className={`pointer-events-none transition-opacity duration-300 ${isVisible ? "opacity-100" : "opacity-0"}`}>
+      {/* Outer Magnetic Ring */}
       <motion.div
         animate={{
-          width: isPointer ? (label ? 80 : 44) : 32,
-          height: isPointer ? (label ? 80 : 44) : 32,
-          opacity: isPointer ? 0.95 : 0.6,
+          width: isPointer ? (label ? 84 : 48) : 32,
+          height: isPointer ? (label ? 84 : 48) : 32,
+          borderColor: isPointer ? "var(--acid)" : "rgba(255, 255, 255, 0.25)",
+          backgroundColor: label ? "rgba(184, 255, 0, 0.12)" : isPointer ? "rgba(255, 255, 255, 0.04)" : "transparent",
         }}
-        transition={{ type: "spring", stiffness: 220, damping: 22 }}
-        className="fixed top-0 left-0 z-[9999] rounded-full border border-acid/80 pointer-events-none flex items-center justify-center mix-blend-difference shadow-[0_0_15px_rgba(223,255,0,0.4)]"
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className="fixed top-0 left-0 z-[9999] rounded-full border pointer-events-none flex items-center justify-center backdrop-blur-[2px]"
         style={{
-          x: springX, y: springY,
-          translateX: "-50%", translateY: "-50%",
-          backdropFilter: label ? "invert(1)" : "none",
+          x: springX,
+          y: springY,
+          translateX: "-50%",
+          translateY: "-50%",
         }}
       >
         {label && (
-          <span className="text-acid text-[10px] font-mono font-bold uppercase tracking-widest">
+          <span className="text-acid text-[10px] font-mono font-bold uppercase tracking-widest px-2 text-center">
             {label}
           </span>
         )}
       </motion.div>
 
-      {/* Inner dot */}
+      {/* Inner Precision Dot */}
       <motion.div
-        style={{ x: dotX, y: dotY, translateX: "-50%", translateY: "-50%" }}
-        className="fixed top-0 left-0 z-[9999] w-2 h-2 rounded-full bg-acid pointer-events-none shadow-[0_0_10px_#dfff00]"
+        style={{
+          x: dotX,
+          y: dotY,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+        animate={{
+          scale: isPointer ? (label ? 0 : 0.6) : 1,
+          opacity: label ? 0 : 1,
+        }}
+        className="fixed top-0 left-0 z-[9999] w-2 h-2 rounded-full bg-acid pointer-events-none shadow-[0_0_8px_var(--acid)]"
       />
-    </>
+    </div>
   );
 };
+

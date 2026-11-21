@@ -21,7 +21,10 @@ export const Testimonials = () => {
       <div className="section-padding container mx-auto">
         {/* Section Tagline */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="label-sm text-acid">06 — CLIENT TALK</span>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-acid" />
+            <span className="label-sm text-acid uppercase tracking-widest text-xs font-semibold">08 — CLIENT TESTIMONIALS</span>
+          </div>
           <div className="rule flex-1" />
         </div>
 

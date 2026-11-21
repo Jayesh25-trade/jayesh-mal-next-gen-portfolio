@@ -252,7 +252,12 @@ export const Projects = () => {
           className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 sm:mb-14"
         >
           <div>
-            <span className="label-sm text-acid block mb-3">05 — 3D GLASS SLABS</span>
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2 h-2 rounded-full bg-acid" />
+              <span className="label-sm text-acid uppercase tracking-widest text-xs font-semibold">
+                03 — SELECTED PORTFOLIO
+              </span>
+            </div>
             <h2
               className="font-display font-black tracking-tighter uppercase text-text"
               style={{ fontSize: "var(--h-section)", lineHeight: 1 }}

@@ -108,7 +108,7 @@ export const Process = () => {
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-2 h-2 rounded-full bg-acid" />
-            <span className="label-sm text-acid uppercase tracking-widest text-xs">06 — ENGINEERING METHODOLOGY</span>
+            <span className="label-sm text-acid uppercase tracking-widest text-xs">05 — ENGINEERING METHODOLOGY</span>
           </div>
           <h2
             className="font-display font-black tracking-tighter text-text uppercase"
@@ -208,7 +208,7 @@ export const Process = () => {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="w-2 h-2 rounded-full bg-acid" />
-              <span className="label-sm text-acid block uppercase tracking-widest text-xs">06 — ENGINEERING METHODOLOGY</span>
+              <span className="label-sm text-acid block uppercase tracking-widest text-xs">05 — ENGINEERING METHODOLOGY</span>
             </div>
             <h2
               className="font-display font-black tracking-tighter text-text uppercase"

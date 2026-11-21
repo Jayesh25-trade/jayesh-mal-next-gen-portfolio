@@ -49,8 +49,11 @@ export const Featured = () => {
       <div className="container-xl">
         {/* Label */}
         <div className="flex items-center justify-between mb-10 sm:mb-14">
-          <span className="label-sm">{t.featured.eyebrow}</span>
-          <span className="label-sm">04</span>
+          <div className="flex items-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-acid" />
+            <span className="label-sm text-acid tracking-widest uppercase">02 — FEATURED WORK</span>
+          </div>
+          <span className="label-sm text-muted font-mono">{t.featured.eyebrow}</span>
         </div>
 
         {/* Full-bleed image with curtain reveal */}

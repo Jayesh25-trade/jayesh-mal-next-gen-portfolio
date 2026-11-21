@@ -55,16 +55,11 @@ export const FullscreenMenu = () => {
 
   return (
     <>
-      {/* ── Minimalist Clean Header (No background, no shapes, simple text) ── */}
+      {/* ── Modern Frosted Header ── */}
       <header
-        className="fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 sm:px-10 py-4 pointer-events-none transition-all duration-300"
-        style={{
-          background: "transparent",
-          backdropFilter: "none",
-          WebkitBackdropFilter: "none",
-          border: "none",
-          boxShadow: "none",
-        }}
+        className={`fixed top-0 left-0 right-0 z-[100] flex items-center justify-between px-4 sm:px-10 py-4 pointer-events-none transition-all duration-300 ${
+          scrolled && !open ? "bg-ink/75 backdrop-blur-md border-b border-white/[0.06] shadow-2xl" : "bg-transparent"
+        }`}
       >
         {/* Simple Text Logo */}
         <motion.a

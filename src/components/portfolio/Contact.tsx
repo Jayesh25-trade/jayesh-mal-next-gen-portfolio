@@ -70,7 +70,10 @@ export const Contact = () => {
       <div className="section-padding container mx-auto">
         {/* Header Tagline */}
         <div className="flex items-center gap-4 mb-16">
-          <span className="label-sm text-acid">08 — INITIATE</span>
+          <div className="flex items-center gap-2">
+            <span className="w-2 h-2 rounded-full bg-acid" />
+            <span className="label-sm text-acid uppercase tracking-widest text-xs font-semibold">10 — INITIATE PROJECT</span>
+          </div>
           <div className="rule flex-1" />
         </div>
 
@@ -146,6 +149,7 @@ export const Contact = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                <input type="checkbox" name="botcheck" className="hidden" style={{ display: "none" }} tabIndex={-1} autoComplete="off" />
                 <div>
                   <label htmlFor="name" className="block text-xs font-mono uppercase tracking-widest text-muted mb-2">
                     {t.contact.name}

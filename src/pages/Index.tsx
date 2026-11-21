@@ -5,7 +5,6 @@ import { MagneticCursor } from "@/components/cursor/MagneticCursor";
 import { Navbar } from "@/components/portfolio/Navbar";
 import { Hero } from "@/components/portfolio/Hero";
 import { KineticPillars } from "@/components/portfolio/KineticPillars";
-import { Stats } from "@/components/portfolio/Stats";
 import { About } from "@/components/portfolio/About";
 import { Values } from "@/components/portfolio/Values";
 import { Featured } from "@/components/portfolio/Featured";
@@ -36,13 +35,12 @@ const Index = () => {
         <main className="relative min-h-screen" style={{ zIndex: 1 }}>
           <Navbar />
           <Hero />
-          <Stats />
           <About />
-          <Values />
           <Featured />
           <Projects />
-          <Process />
           <Services />
+          <Process />
+          <Values />
           <Stack />
           <Testimonials />
           <FAQ />

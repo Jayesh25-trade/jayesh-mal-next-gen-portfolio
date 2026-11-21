@@ -1,90 +1,17 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef } from "react";
 import { motion, useScroll, useTransform, useInView } from "framer-motion";
+import { ArrowUpRight, Sparkles, Code2, Layers, Cpu, ShieldCheck } from "lucide-react";
 
-const CIPHER_CHARS = "010101XYZ#%@!$*[]{}<>/\\&+=ØÆ";
-
-const MatrixDecodeText = () => {
-  const containerRef = useRef<HTMLParagraphElement>(null);
-  const isInView = useInView(containerRef, { once: true, margin: "-60px" });
-  const [displayText, setDisplayText] = useState<string>("");
-  const [isDecoded, setIsDecoded] = useState(false);
-
-  const fullText = "We are Jimmzzz Developers — a next-gen web development agency building products people love.";
-
-  const triggerDecode = () => {
-    setIsDecoded(false);
-    let iteration = 0;
-    const interval = setInterval(() => {
-      setDisplayText(
-        fullText
-          .split("")
-          .map((char, index) => {
-            if (char === " ") return " ";
-            if (index < iteration) return fullText[index];
-            return CIPHER_CHARS[Math.floor(Math.random() * CIPHER_CHARS.length)];
-          })
-          .join("")
-      );
-
-      if (iteration >= fullText.length) {
-        clearInterval(interval);
-        setDisplayText(fullText);
-        setIsDecoded(true);
-      }
-      iteration += 1.8;
-    }, 25);
-  };
-
-  useEffect(() => {
-    if (isInView) {
-      triggerDecode();
-    }
-  }, [isInView]);
-
-  const renderText = () => {
-    if (!isDecoded && displayText) {
-      return (
-        <span className="font-mono text-acid-dim tracking-wider font-semibold">
-          {displayText}
-        </span>
-      );
-    }
-
-    return (
-      <>
-        We are{" "}
-        <span className="inline-block relative group/brand cursor-pointer" onClick={triggerDecode} title="Click to re-trigger matrix decode">
-          <span className="relative z-10 px-2.5 py-1 rounded bg-ink text-acid font-black shadow-lg transition-transform duration-300 inline-block hover:scale-105">
-            Jimmzzz Developers
-          </span>
-          <span className="absolute -bottom-1 left-0 w-full h-[3px] bg-acid rounded-full transition-all duration-300 group-hover/brand:h-full group-hover/brand:opacity-20" />
-        </span>
-        {" "}— a next-gen web development agency building products people love.
-      </>
-    );
-  };
-
-  return (
-    <p
-      ref={containerRef}
-      className="font-display font-bold leading-tight tracking-tighter transition-all"
-      style={{ fontSize: "clamp(26px, 3.5vw, 48px)", color: "var(--ink)" }}
-    >
-      {renderText()}
-    </p>
-  );
-};
-
-/* Curtain reveal used for the pull-quote */
+/* Curtain reveal used for headlines and quotes */
 const Curtain = ({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) => {
   const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
+  const inView = useInView(ref, { once: true, margin: "-60px" });
   return (
     <div ref={ref} className="overflow-hidden">
       <motion.div
         animate={inView ? { y: "0%" } : { y: "105%" }}
         initial={{ y: "105%" }}
-        transition={{ delay, duration: 1.0, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ delay, duration: 0.9, ease: [0.22, 1, 0.36, 1] }}
       >
         {children}
       </motion.div>
@@ -92,56 +19,75 @@ const Curtain = ({ children, delay = 0 }: { children: React.ReactNode; delay?: n
   );
 };
 
-const ABOUT_POINTS = [
-  "Pixel-perfect UI built with React, Next.js & Tailwind",
-  "Scalable backends with Node, PostgreSQL & Supabase",
-  "Conversion-focused design with motion & micro-interactions",
-  "SEO, Core Web Vitals & accessibility — built in",
+const ABOUT_HIGHLIGHTS = [
+  {
+    title: "Precision Engineering",
+    desc: "React, Next.js, and TypeScript architectures crafted with zero technical debt.",
+    icon: Code2,
+  },
+  {
+    title: "Scalable Infrastructure",
+    desc: "Node.js, PostgreSQL, Supabase, and distributed edge deployments.",
+    icon: Cpu,
+  },
+  {
+    title: "60fps Motion UX",
+    desc: "Framer Motion & GSAP micro-interactions tuned for fluid mobile response.",
+    icon: Layers,
+  },
+  {
+    title: "Performance & SEO SLAs",
+    desc: "99+ Core Web Vitals, accessible semantic HTML, and structured metadata.",
+    icon: ShieldCheck,
+  },
 ];
 
 export const About = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
-  const lineScale = useTransform(scrollYProgress, [0, 0.5], [0, 1]);
+  const lineScale = useTransform(scrollYProgress, [0, 0.4], [0, 1]);
 
   return (
     <section
       ref={sectionRef}
       id="about"
       className="relative grain"
-      style={{ background: "var(--cream)", color: "var(--ink)", paddingBlock: "var(--section-py)" }}
+      style={{ background: "var(--ink)", color: "var(--text)", paddingBlock: "var(--section-py)" }}
     >
-      {/* Dot grid texture */}
-      <div className="absolute inset-0 dot-grid opacity-30 pointer-events-none" />
-
       <div className="container-xl relative">
         {/* ─── Top row: section label + index ─── */}
         <div className="flex items-center justify-between mb-12 sm:mb-16">
-          <span className="label-sm" style={{ color: "var(--muted-2)" }}>About us</span>
-          <span className="label-sm" style={{ color: "var(--muted-2)" }}>02</span>
+          <div className="flex items-center gap-3">
+            <span className="w-2 h-2 rounded-full bg-acid" />
+            <span className="label-sm text-acid tracking-widest uppercase">01 — ABOUT THE STUDIO</span>
+          </div>
+          <span className="label-sm text-muted font-mono">EST. 2021</span>
         </div>
 
         {/* ─── Main: 30/70 asymmetric split ─── */}
         <div className="grid grid-cols-1 lg:grid-cols-[2fr_5fr] gap-10 lg:gap-20">
-
-          {/* LEFT narrow: oversized pull-quote number / accent */}
+          {/* LEFT narrow: oversized studio monogram */}
           <div className="flex flex-col justify-between">
-            {/* Big oversized "03" marker */}
             <div
-              className="font-display font-black select-none hidden lg:block"
-              style={{ fontSize: "clamp(80px, 10vw, 130px)", color: "var(--cream-2)", lineHeight: 1, letterSpacing: "-0.04em" }}
+              className="font-display font-black select-none hidden lg:block opacity-20 hover:opacity-30 transition-opacity"
+              style={{
+                fontSize: "clamp(80px, 10vw, 130px)",
+                color: "var(--acid)",
+                lineHeight: 1,
+                letterSpacing: "-0.04em",
+              }}
               aria-hidden
             >
               JD.
             </div>
-            {/* Animated rule */}
+
             <div className="mt-8 lg:mt-0 flex flex-col gap-4">
               <motion.div
-                style={{ scaleX: lineScale, transformOrigin: "left", background: "var(--ink)", height: "1px" }}
-                className="w-full"
+                style={{ scaleX: lineScale, transformOrigin: "left", background: "var(--acid)", height: "1px" }}
+                className="w-full opacity-60"
               />
-              <p className="text-sm leading-relaxed" style={{ color: "var(--muted-2)", fontFamily: "var(--font-body)" }}>
-                Since 2021, building fast and thoughtfully.
+              <p className="text-sm leading-relaxed text-muted font-body">
+                Building scalable web products and high-converting software systems since 2021.
               </p>
             </div>
           </div>
@@ -149,68 +95,63 @@ export const About = () => {
           {/* RIGHT wide: content */}
           <div>
             <Curtain delay={0.1}>
-              <MatrixDecodeText />
+              <h2
+                className="font-display font-bold leading-tight tracking-tighter text-text"
+                style={{ fontSize: "clamp(26px, 3.5vw, 48px)" }}
+              >
+                We are{" "}
+                <span className="text-acid underline decoration-acid/30 decoration-2 underline-offset-8">
+                  Jimmy Developers
+                </span>{" "}
+                — a next-generation web studio building products people actually love using.
+              </h2>
             </Curtain>
 
-            {/* Body text */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-60px" }}
-              transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-6 sm:mt-8 text-base sm:text-lg leading-relaxed max-w-xl"
-              style={{ color: "var(--muted-2)", fontFamily: "var(--font-body)" }}
-            >
-              Led by founder Jayesh Mal, our studio obsesses over performance, motion,
-              and the tiny details that make a product feel premium. We design and
-              engineer modern web experiences end-to-end — from concept to production.
-            </motion.p>
-
-            {/* Founder Developer Spotlight Paragraph */}
+            {/* Founder Developer Spotlight */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-60px" }}
-              transition={{ delay: 0.4, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-              className="mt-8 pt-8 border-t border-cream-2 max-w-xl"
+              transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+              className="mt-8 sm:mt-10 p-6 sm:p-8 rounded-2xl bg-white/[0.02] border border-white/[0.08] backdrop-blur-sm relative overflow-hidden"
             >
-              <div className="flex items-center gap-2 mb-3">
-                <span className="w-2 h-2 rounded-full" style={{ background: "var(--acid-dim)" }} />
-                <span className="label-sm uppercase font-bold text-xs" style={{ color: "var(--ink)" }}>
-                  About Jayesh Mal — Founder & Full-Stack Developer
+              <div className="flex items-center gap-2 mb-4">
+                <span className="w-2 h-2 rounded-full bg-acid" />
+                <span className="label-sm uppercase font-mono text-xs text-acid">
+                  Founder & Technical Architect — Jayesh Mal
                 </span>
               </div>
-              <p className="text-base sm:text-lg leading-relaxed font-body" style={{ color: "var(--ink)" }}>
-                A passionate full-stack developer and digital architect dedicated to crafting ultra-fast, visually stunning web applications and scalable software systems. Combining cutting-edge frontend engineering with robust architecture, Jayesh transforms complex ideas into seamless, high-impact digital experiences built for performance and growth.
+              <p className="text-base sm:text-lg leading-relaxed text-text/90 font-body">
+                Combining high-fidelity UI design with robust full-stack architecture, we transform complex business problems into seamless, high-velocity digital experiences. Every project ships with pixel-perfect attention to detail, sub-second response times, and an architecture built for long-term scale.
               </p>
             </motion.div>
 
-            {/* Fact list — staggered */}
-            <ul className="mt-8 sm:mt-10 space-y-0">
-              {ABOUT_POINTS.map((pt, i) => (
-                <motion.li
-                  key={pt}
-                  initial={{ opacity: 0, x: -16 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true, margin: "-40px" }}
-                  transition={{ delay: i * 0.1 + 0.4, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-                  className="flex items-center gap-4 py-4 text-sm sm:text-base"
-                  style={{
-                    borderBottom: "1px solid var(--cream-2)",
-                    color: "var(--ink)",
-                    fontFamily: "var(--font-body)",
-                  }}
-                >
-                  <span
-                    className="shrink-0 font-display font-black text-xs"
-                    style={{ color: "var(--acid-dim)" }}
+            {/* Capability highlights grid */}
+            <div className="mt-8 sm:mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {ABOUT_HIGHLIGHTS.map((item, i) => {
+                const Icon = item.icon;
+                return (
+                  <motion.div
+                    key={item.title}
+                    initial={{ opacity: 0, y: 16 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-40px" }}
+                    transition={{ delay: i * 0.1 + 0.35, duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+                    className="p-5 rounded-xl border border-white/[0.06] bg-white/[0.015] hover:border-acid/40 hover:bg-white/[0.03] transition-all duration-300 group"
                   >
-                    {String(i + 1).padStart(2, "0")}
-                  </span>
-                  {pt}
-                </motion.li>
-              ))}
-            </ul>
+                    <div className="w-9 h-9 rounded-lg bg-acid/10 border border-acid/20 flex items-center justify-center text-acid mb-3 group-hover:scale-105 transition-transform">
+                      <Icon className="w-4 h-4" />
+                    </div>
+                    <h3 className="font-display font-bold text-base text-text group-hover:text-acid transition-colors">
+                      {item.title}
+                    </h3>
+                    <p className="mt-1.5 text-xs sm:text-sm text-muted font-body leading-relaxed">
+                      {item.desc}
+                    </p>
+                  </motion.div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </div>
