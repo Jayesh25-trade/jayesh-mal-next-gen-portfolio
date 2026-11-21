@@ -6,3 +6,5 @@
 - [ ] Add smooth scroll, cursor, parallax, and responsive fallbacks.
 - [ ] Resolve current diagnostics and verify desktop/mobile behavior.
 - [x] Clear all current typecheck build errors.
+- [ ] Phone slide-deck mode: snap slides, chapter dock, swipe rails, light atmosphere.
+- [ ] Give every project its own distinct image — no repeated mockup style.
